@@ -37,7 +37,8 @@ contract Token is ERC20 {
         payable(tokenOwner).transfer(msg.value);
     }
 
-    function sendUserSomeToken(address to, uint amount) public payable {
+    function sendUserSomeToken(address to, uint amt) public payable {
+        uint amount = amt * unitsOneEthCanBuy;
         require(balanceOf(msg.sender) >= amount, 
             "Not enough tokens");
         _transfer(msg.sender, to, amount);

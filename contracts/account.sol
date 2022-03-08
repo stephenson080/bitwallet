@@ -38,6 +38,10 @@ contract Account {
         return address(this).balance;
     }
 
+    function setUserAddress(address newAddress) public checkUserAddress{
+        userAddress = newAddress;
+    }
+
     modifier checkUserAddress(){  
         require(msg.sender == userAddress, "Sorry you are not Authorised to make this transaction");
         _;

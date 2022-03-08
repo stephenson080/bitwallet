@@ -1,6 +1,7 @@
 import 'semantic-ui-css/semantic.min.css'
 import '../styles/globals.css'
 import '../firebase-config'
+
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk'

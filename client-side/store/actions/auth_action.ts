@@ -6,8 +6,18 @@ import {
   signOut,
   sendPasswordResetEmail
 } from 'firebase/auth';
+import {getApp} from 'firebase/app';
+import {
+  getDocs,
+  getFirestore,
+  collection,
+  query,
+  where,
+} from 'firebase/firestore'
+
+
 import User from '../../models/user';
-import {SignUpState} from '../../components/SignUp';
+import {SignUpState} from '../../pages/auth/sign-up';
 import {LoginState} from '../../pages/auth/login'
 import { Role } from '../types';
 import { ForgotState } from '../../components/ForgotPassword';
@@ -17,6 +27,12 @@ export const AUTH_ACTIONS = {
   SETMESSAGE: 'SETMESSAGE',
   LOGOUT: 'LOGOUT'
 };
+
+const app = getApp();
+
+const firestore = getFirestore(app);
+
+const userCol = collection(firestore, 'users');
 
 const auth = getAuth();
 
@@ -33,12 +49,30 @@ function clearMsg() {
   };
 }
 
+async function checkUser(username : string){
+  try {
+    const q = query(userCol, where('username', '==', username));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 export function signup(data: SignUpState, cb: (m : string) => Promise<void>) {
   return async (dispatch: any) => {
     try {
       dispatch(clearMsg())
       if (data.password !== data.confirmPassword) {
         throw new Error('Confirm password and Password fields must be same');
+      }
+      const existingUser = await checkUser(data.username)
+      if(existingUser) {
+        throw new Error(`Please use another username ${data.username} has been used by another user`);
       }
       const res = await createUserWithEmailAndPassword(
         auth,
@@ -155,7 +189,7 @@ export function forgotPass(data : ForgotState, cb : (m : string) => void){
   }
 }
 
-export function autoLogin(uid : string, cb : (m : string) => void) {
+export function autoLogin(uid : string, cb : (user: User | undefined) => void) {
   return async (dispatch : any) => {
     try {
       dispatch(clearMsg())
@@ -171,9 +205,9 @@ export function autoLogin(uid : string, cb : (m : string) => void) {
           user: user
         },
       });
-      cb('SUCCESS')
+      cb(user)
     } catch (error) {
-      cb('DANGER')
+      cb(undefined)
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
         payload: {

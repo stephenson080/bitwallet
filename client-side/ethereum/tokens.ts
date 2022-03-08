@@ -1,6 +1,6 @@
 import {getFmtToken, getCRMToken, getQmToken} from './token';
 import {Token} from '../components/Token';
-const tokens: Token[] = [];
+ 
 
 export default async function getTokens(index: number | undefined) {
   const fmtToken = getFmtToken();
@@ -9,7 +9,7 @@ export default async function getTokens(index: number | undefined) {
   const fmtDetails = await fmtToken.methods.getSummary().call();
   const crmDetails = await crmToken.methods.getSummary().call();
   const qmtDetails = await qmtToken.methods.getSummary().call();
-  tokens.push(
+  const tokens: Token[] =[
     {
       name: fmtDetails[0],
       symbol: fmtDetails[1],
@@ -34,7 +34,7 @@ export default async function getTokens(index: number | undefined) {
       totalSupply: qmtDetails[2],
       address: qmtToken._address,
     }
-  );
+  ]
   if (index) {
     return tokens[index];
   }

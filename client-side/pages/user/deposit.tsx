@@ -1,13 +1,16 @@
+import Head from 'next/head';
+import {useState, Fragment, useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+
 import SidebarComponent from '../../components/Sidebar';
 import DashboardNav, {Balances} from '../../components/DashboardNav';
-import {useSelector, useDispatch} from 'react-redux';
+import {logout, autoLogin} from '../../store/actions/auth_action';
+
 import {Store} from '../_app';
 import User from '../../models/user';
-import {useState, Fragment, useEffect} from 'react';
-import {logout, autoLogin} from '../../store/actions/auth_action';
 import {useRouter} from 'next/router';
 import {MessageType, Role} from '../../store/types';
-import Head from 'next/head';
+
 import {
   Form,
   Message,
@@ -46,25 +49,23 @@ export default function DepositPage() {
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
+    if (user){
+      return
+    }
     if (userId) {
-      if (!user) {
-        setPageLoading(true);
-        dispatch(
-          autoLogin(userId, (m) => {
-            setPageLoading(false);
-            if (m === 'SUCCESS') {
-              getAcctDetails(user);
-              if (user!.role === Role.Admin) {
-                router.replace('/admin/dashboard');
-              } else {
-                router.replace('/user/dashboard');
-              }
-            } else {
-              router.replace('/auth/login');
+      setPageLoading(true);
+      dispatch(
+        autoLogin(userId, (us) => {
+          setPageLoading(false);
+          if (us) {
+            if (us.role === Role.Admin) {
+              router.replace('/admin/dashboard');
             }
-          })
-        );
-      }
+          } else {
+            router.replace('/auth/login');
+          }
+        })
+      );
     } else {
       router.replace('/auth/login');
     }
@@ -154,7 +155,7 @@ export default function DepositPage() {
         content: `You have deposited ${state.amount} to your Account`,
         header: 'Operation Success',
       });
-      getAcctDetails(user)
+      getAcctDetails(user);
     } catch (error) {
       setMsg({
         type: 'SUCCESS',

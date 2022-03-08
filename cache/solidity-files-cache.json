@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\UDE VALENTINE\\Documents\\uba ude\\etherum-projects\\bank-app\\contracts\\account.sol": {
-      "lastModificationDate": 1646434253731,
-      "contentHash": "f8d00abe90a7b453d1e07f1b6148b9a8",
+      "lastModificationDate": 1646674383884,
+      "contentHash": "3ba69a306ef803f5f39ad4a65d6b1296",
       "sourceName": "contracts/account.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -292,8 +292,8 @@
       ]
     },
     "C:\\Users\\UDE VALENTINE\\Documents\\uba ude\\etherum-projects\\bank-app\\contracts\\Token.sol": {
-      "lastModificationDate": 1646422741674,
-      "contentHash": "b215da21563c8e362750d3907d421296",
+      "lastModificationDate": 1646761565667,
+      "contentHash": "60315309e2a6814e6a2612c2361c3fe1",
       "sourceName": "contracts/Token.sol",
       "solcConfig": {
         "version": "0.8.4",

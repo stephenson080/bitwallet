@@ -1,19 +1,22 @@
-import SidebarComponent from '../../components/Sidebar';
-import {useSelector, useDispatch} from 'react-redux';
-import {Store} from '../_app';
-import User from '../../models/user';
-import DashboardNav, {Balances} from '../../components/DashboardNav';
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
-import web3 from '../../ethereum/web3-config';
-import {MessageType, Role} from '../../store/types';
-
+import {useSelector, useDispatch} from 'react-redux';
 import {Container, Table, Dimmer, Loader} from 'semantic-ui-react';
-import {logout, autoLogin} from '../../store/actions/auth_action';
-import {getTransactionsFromDB} from '../../store/actions/user-actions';
 import Head from 'next/head';
+
+import DashboardNav, {Balances} from '../../components/DashboardNav';
+import SidebarComponent from '../../components/Sidebar';
+
+import web3 from '../../ethereum/web3-config';
 import Acct from '../../ethereum/account';
 import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
+
+import {MessageType, Role} from '../../store/types';
+import {logout, autoLogin} from '../../store/actions/auth_action';
+import {getTransactionsFromDB} from '../../store/actions/user-actions';
+import {Store} from '../_app';
+import User from '../../models/user';
+
 
 export enum TransactionType {
   MINT_TOKEN,
@@ -40,24 +43,24 @@ export default function Transactions(props: any) {
 
   useEffect(() => {
     getAcct();
+    if (user){
+      return
+    }
     const userId = localStorage.getItem('userId');
     if (userId) {
-      if (!user) {
-        setPageLoading(true);
-        dispatch(
-          autoLogin(userId, (m) => {
-            setPageLoading(false);
-            if (m === 'SUCCESS') {
-              getAcctDetails(user);
-              if (user!.role === Role.Admin) {
-                router.replace('/admin/dashboard');
-              }
-            } else {
-              router.replace('/auth/login');
+      setPageLoading(true);
+      dispatch(
+        autoLogin(userId, (us) => {
+          setPageLoading(false);
+          if(us) {
+            if (us.role === Role.Admin) {
+              router.replace('/admin/dashboard');
             }
-          })
-        );
-      }
+          } else {
+            router.replace('/auth/login');
+          }
+        })
+      );
     } else {
       router.replace('/auth/login');
     }

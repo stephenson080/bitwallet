@@ -4,7 +4,8 @@ import { initializeApp } from "firebase/app";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// For Firebase JS SDK v7.20.0 and later, measurementId is 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBT7ndZDN1aCU2QpnID7LFf1x5t0Yocbvo",
   authDomain: "bitwallet-e5613.firebaseapp.com",

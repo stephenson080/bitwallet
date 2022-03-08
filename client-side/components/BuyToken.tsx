@@ -119,7 +119,6 @@ export default function BuyToken(props: Props) {
               placeholder="enter amount in ether"
               value={state.amount}
               onChange={(e) => {
-                console.log('djhjsdhjdhj');
                 setState({
                   ...state,
                   amount: e.target.value,

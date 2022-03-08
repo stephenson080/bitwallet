@@ -1,10 +1,7 @@
-import Signup from '../../components/SignUp';
 import {useSelector, useDispatch} from 'react-redux';
-import {Store} from '../_app';
-import {MessageType, Role} from '../../store/types';
 import {useState, useEffect} from 'react';
-import NavBar from '../../components/NavBar';
-import ForgotPassword from '../../components/ForgotPassword';
+import {useRouter} from 'next/router';
+import Head from 'next/head';
 import {
   Container,
   Grid,
@@ -16,11 +13,16 @@ import {
   Loader,
   Dimmer,
 } from 'semantic-ui-react';
-import classes from '../../styles/Home.module.css';
-import web3 from '../../ethereum/web3-config';
-import User from '../../models/user';
+
+import {Store} from '../_app';
+import {MessageType, Role} from '../../store/types';
+import ForgotPassword from '../../components/ForgotPassword';
 import {Signin, autoLogin} from '../../store/actions/auth_action';
-import {useRouter} from 'next/router';
+
+import User from '../../models/user';
+import web3 from '../../ethereum/web3-config';
+
+import classes from '../../styles/Home.module.css';
 
 export interface LoginState {
   email: string;
@@ -28,7 +30,6 @@ export interface LoginState {
 }
 
 export default function Login() {
-  const [showModal, setShowModal] = useState(false);
   const [currentAddress, setCurAddress] = useState('');
   const [showForgotPassModal, setPassModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ export default function Login() {
     email: '',
     password: '',
   });
-  const [pageLoading, setPageLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false);
   const msg = useSelector<Store, MessageType>((state) => state.auth.message);
   const user = useSelector<Store, User>((state) => state.auth.user!);
 
@@ -46,21 +47,19 @@ export default function Login() {
   const router = useRouter();
   useEffect(() => {
     const userId = localStorage.getItem('userId');
+
     if (userId) {
-      setPageLoading(true)
+      setPageLoading(true);
       dispatch(
-        autoLogin(userId, (m) => {
-          if (m === 'SUCCESS') {
-            setPageLoading(false)
-            if (user.role === Role.Admin){
+        autoLogin(userId, (us) => {
+          setPageLoading(false);
+          if (us) {
+            if (us.role === Role.Admin) {
               router.replace('/admin/dashboard');
-            }else {
-              router.replace('/admin/dashboard');
+            } else {
+              router.replace('/user/dashboard');
             }
-          }else {
-            router.replace('/auth/login');
           }
-          
         })
       );
     }
@@ -70,7 +69,7 @@ export default function Login() {
     const accounts = await web3.eth.getAccounts();
     setCurAddress(accounts[0]);
   }
-  function setDependencies() {
+  async function setDependencies() {
     if (msg.type === 'SUCCESS') {
       setSuccess(true);
     }
@@ -80,20 +79,21 @@ export default function Login() {
       header: msg.header,
     });
     if (user) {
-      if (user.user_address !== currentAddress) {
+      const accounts = await web3.eth.getAccounts();
+      if (user.user_address !== accounts[0]) {
         setMsg({
           type: 'DANGER',
           content: 'Please change your Address to One you use to Register',
           header: 'Warning',
         });
         setSuccess(false);
-      }
-      localStorage.setItem('userId', user.uid);
-      localStorage.setItem('role', user.role.toString());
-      if (user.role === Role.Admin) {
-        router.replace('/admin/dashboard');
-      }else {
-        router.replace('/user/dashboard')
+      } else {
+        localStorage.setItem('userId', user.uid);
+        if (user.role === Role.Admin) {
+          router.replace('/admin/dashboard');
+        } else {
+          router.replace('/user/dashboard');
+        }
       }
     }
   }
@@ -113,20 +113,19 @@ export default function Login() {
   }
   return (
     <div style={{backgroundColor: 'whitesmoke'}}>
-      <Dimmer active = {pageLoading}>
-        <Loader size = 'massive' indeterminate>Trying to Login...</Loader>
+      <Head>
+        <title>BITWallet | Login</title>
+      </Head>
+      <Dimmer active={pageLoading}>
+        <Loader size="massive" indeterminate>
+          Trying to Login...
+        </Loader>
       </Dimmer>
-      <Signup
-        showModal={showModal}
-        closeModal={() => setShowModal(false)}
-        msg={msg}
-      />
       <ForgotPassword
         msg={msg}
         showModal={showForgotPassModal}
         closeModal={() => setPassModal(false)}
       />
-      <NavBar activeItem="h" handleClick={() => {}} />
       <div className={classes.main}>
         <Container>
           <Grid>
@@ -143,6 +142,9 @@ export default function Login() {
                     borderBottomLeftRadius: '25px',
                   }}
                 >
+                  <p onClick={() => router.replace('/')}>
+                    <Icon size="large" link name="arrow left" />
+                  </p>
                   <Image
                     centered
                     src="/images/login-image.png"
@@ -191,9 +193,12 @@ export default function Login() {
                         alignItems: 'center',
                       }}
                     >
-                      <h4 onClick={() => setPassModal(true)}>
+                      <p
+                        style={{fontSize: '1.2rem'}}
+                        onClick={() => setPassModal(true)}
+                      >
                         Forget Password
-                      </h4>
+                      </p>
                       <Button
                         onClick={loginUser}
                         loading={loading}
@@ -226,7 +231,7 @@ export default function Login() {
                     Don't have an Account?{' '}
                     <strong
                       style={{cursor: 'pointer', color: 'orange'}}
-                      onClick={() => setShowModal(true)}
+                      onClick={() => router.replace('/auth/sign-up')}
                     >
                       Create new Account
                     </strong>

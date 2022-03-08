@@ -75,7 +75,7 @@ class User {
       const q = query(userCol, where('username', '==', username));
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
-        throw new Error('Sorry no Found');
+        throw new Error('Sorry user not Found');
       }
       querySnapshot.forEach((d) => {
         // doc.data() is never undefined for query doc snapshots

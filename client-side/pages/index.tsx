@@ -1,19 +1,19 @@
 import {NextPage} from 'next';
 import Head from 'next/head';
-// import Image from 'next/image';
-import classes from '../styles/Home.module.css';
-import {Grid, Container, Image, Button, Transition} from 'semantic-ui-react';
+import {useState, useEffect} from 'react';
+import {Grid, Container, Image, Button} from 'semantic-ui-react';
+
+
 import NavBar from '../components/NavBar';
 import Tokens, {Token, TokenType} from '../components/Token';
 import Services, {Service} from '../components/Services';
-import Signup from '../components/SignUp';
-import {useState, useEffect} from 'react';
-import {useSelector} from 'react-redux';
-import {MessageType} from '../store/types';
-import {Store} from './_app';
-import getTokens from '../ethereum/tokens';
 import BuyToken from '../components/BuyToken';
+
+import getTokens from '../ethereum/tokens';
 import web3 from '../ethereum/web3-config';
+import {useRouter} from 'next/router';
+
+import classes from '../styles/Home.module.css';
 
 const services: Service[] = [
   {
@@ -40,7 +40,6 @@ const services: Service[] = [
   },
 ];
 interface State {
-  showModal: boolean;
   showBuyTokenModal: boolean;
   curTokenName: string;
   curUserAddress: string;
@@ -61,12 +60,13 @@ export async function getStaticProps() {
 }
 const Home: NextPage = (props: Props) => {
   const [state, setState] = useState<State>({
-    showModal: false,
     curContractAddress: '',
     curTokenName: '',
     curUserAddress: '',
     showBuyTokenModal: false,
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     getAcct();
@@ -78,7 +78,6 @@ const Home: NextPage = (props: Props) => {
       curUserAddress: accounts[0],
     });
   }
-  const msg = useSelector<Store, MessageType>((state) => state.auth.message);
   function getTokenDetails(token: Token, action: string) {
     if (action === 'BUYTOKEN') {
       setState({
@@ -109,16 +108,7 @@ const Home: NextPage = (props: Props) => {
           })
         }
       />
-      <Signup
-        showModal={state.showModal}
-        closeModal={() =>
-          setState({
-            ...state,
-            showModal: false,
-          })
-        }
-        msg={msg}
-      />
+
       <div style={{backgroundColor: 'whitesmoke'}}>
         <NavBar activeItem="jfn" handleClick={() => {}} />
         <div className={classes.main}>
@@ -133,7 +123,7 @@ const Home: NextPage = (props: Props) => {
                     Ethereum Wallet
                   </h3>
                   <Button
-                    onClick={() => setState({...state, showModal: true})}
+                    onClick={() => router.replace('/auth/sign-up')}
                     color="blue"
                   >
                     Create Your Wallet
@@ -161,7 +151,7 @@ const Home: NextPage = (props: Props) => {
             >
               Our Tokens
             </h1>
-            <div id = 'tokens'>
+            <div id="tokens">
               <Tokens
                 tokenType={TokenType.GUEST}
                 getTokenDetails={getTokenDetails}

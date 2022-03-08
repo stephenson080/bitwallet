@@ -1,12 +1,5 @@
-import SidebarComponent from '../../components/Sidebar';
-import DashboardNav, {Balances} from '../../components/DashboardNav';
 import {useSelector, useDispatch} from 'react-redux';
-import {Store} from '../_app';
-import User from '../../models/user';
 import {useState, Fragment, useEffect} from 'react';
-import {logout, autoLogin} from '../../store/actions/auth_action';
-import {useRouter} from 'next/router';
-import {MessageType, Role} from '../../store/types';
 import Head from 'next/head';
 import {
   Form,
@@ -17,11 +10,21 @@ import {
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
+import {useRouter} from 'next/router';
+
+import SidebarComponent from '../../components/Sidebar';
+import DashboardNav, {Balances} from '../../components/DashboardNav';
+
 import Acct from '../../ethereum/account';
 import web3 from '../../ethereum/web3-config';
+import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
+
+import {logout, autoLogin} from '../../store/actions/auth_action';
+import {Store} from '../_app';
+import User from '../../models/user';
+import {MessageType, Role} from '../../store/types';
 import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
-import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
 
 interface TransferState {
   amount: string;
@@ -48,25 +51,23 @@ export default function WithdrawPage() {
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
+    if (user){
+      return
+    }
     if (userId) {
-      if (!user) {
-        setPageLoading(true);
-        dispatch(
-          autoLogin(userId, (m) => {
-            setPageLoading(false);
-            if (m === 'SUCCESS') {
-              if (user!.role === Role.Admin) {
-                getAcctDetails(user);
-                router.replace('/admin/dashboard');
-              } else {
-                router.replace('/user/dashboard');
-              }
-            } else {
-              router.replace('/auth/login');
+      setPageLoading(true);
+      dispatch(
+        autoLogin(userId, (us) => {
+          setPageLoading(false);
+          if (us) {
+            if (us.role === Role.Admin) {
+              router.replace('/admin/dashboard');
             }
-          })
-        );
-      }
+          } else {
+            router.replace('/auth/login');
+          }
+        })
+      );
     } else {
       router.replace('/auth/login');
     }
@@ -98,7 +99,7 @@ export default function WithdrawPage() {
         content: `You have transferred ${state.amount} to ${state.receiver}`,
         header: 'Operation Success',
       });
-      getAcctDetails(user)
+      getAcctDetails(user);
     } catch (error) {
       setMsg({
         type: 'DANGER',

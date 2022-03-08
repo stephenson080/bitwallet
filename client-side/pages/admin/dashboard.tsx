@@ -1,34 +1,37 @@
 import {Fragment, useState, useEffect} from 'react';
-import SidebarComponent from '../../components/Sidebar';
-import Tokens, {TokenType} from '../../components/Token';
-
-import {Token} from '../../components/Token';
 import {
   Container,
   Table,
   Button,
-  Icon,
   Message,
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
-import DashboardNav from '../../components/DashboardNav';
-import web3 from '../../ethereum/web3-config';
-import {MessageType, Role} from '../../store/types';
-import bankContract from '../../ethereum/bankInstance';
 import {useSelector, useDispatch} from 'react-redux';
+import Head from 'next/head';
+import {useRouter} from 'next/router';
+
+
+import {Token} from '../../components/Token';
+import DashboardNav from '../../components/DashboardNav';
+import SidebarComponent from '../../components/Sidebar';
+import Tokens, {TokenType} from '../../components/Token';
+import MintToken from '../../components/MintToken';
+
+import web3 from '../../ethereum/web3-config';
+import bankContract from '../../ethereum/bankInstance';
+import getTokens from '../../ethereum/tokens';
+
+
+import {autoLogin, logout} from '../../store/actions/auth_action';
 import {Store} from '../_app';
 import User from '../../models/user';
-import {useRouter} from 'next/router';
-import getTokens from '../../ethereum/tokens';
-import MintToken from '../../components/MintToken';
-import {autoLogin, logout} from '../../store/actions/auth_action';
 import {
-  addTransactionToDB,
-  getTransactionsFromDB,
+  addTransactionToDB
 } from '../../store/actions/user-actions';
 import {TransactionType} from './transactions';
-import Head from 'next/head';
+import {MessageType, Role} from '../../store/types';
+
 
 export interface Customer {
   key: number;
@@ -38,26 +41,7 @@ export interface Customer {
   userAcct: string | undefined;
 }
 
-// const tokens: Token[] = [
-//   {
-//     name: 'FreeMint',
-//     symbol: 'FMT',
-//     price: '0.000000001',
-//     imageUrl: 'saving2.jpg',
-//   },
-//   {
-//     name: 'CryptMint',
-//     symbol: 'CMT',
-//     price: '0.000001',
-//     imageUrl: 'saving3.jpg',
-//   },
-//   {
-//     name: 'QMint',
-//     symbol: 'QMT',
-//     price: '0.001',
-//     imageUrl: 'saving.png',
-//   },
-// ];
+
 type Props = {
   tokens: Token[];
 };
@@ -102,25 +86,24 @@ export default function AdminDashboard(props: Props) {
   const router = useRouter();
   useEffect(() => {
     getAcct();
+    if (user){
+      return
+    }
     const userId = localStorage.getItem('userId');
     if (userId) {
-      if (!user) {
-        setPageLoading(true);
-        dispatch(
-          autoLogin(userId, (m) => {
-            setPageLoading(false);
-            if (m === 'SUCCESS') {
-              if (user!.role !== Role.Admin) {
-                router.replace('/user/dashboard');
-              } else {
-                router.replace('/admin/dashboard');
-              }
-            } else {
-              router.replace('/auth/login');
-            }
-          })
-        );
-      }
+      setPageLoading(true);
+      dispatch(
+        autoLogin(userId, (us) => {
+          setPageLoading(false);
+          if(us) {
+            if (us.role !== Role.Admin) {
+              router.replace('/user/dashboard');
+            } 
+          } else {
+            router.replace('/auth/login');
+          }
+        })
+      );
     } else {
       router.replace('/auth/login');
     }
