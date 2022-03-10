@@ -130,10 +130,10 @@ export default function Login() {
         <Container>
           <Grid>
             <Grid.Row>
-              <Grid.Column largeScreen="8" mobile="16">
+              <Grid.Column largeScreen = 'eight' mobile = '16' >
                 <h1 style={{marginBottom: '15px'}}>Login to Your BITWallet</h1>
               </Grid.Column>
-              <Grid.Column largeScreen="8" mobile="16">
+              <Grid.Column largeScreen="eight" mobile = '16' >
                 <div
                   style={{
                     backgroundColor: 'white',

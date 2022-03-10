@@ -73,6 +73,10 @@ export default function WithdrawPage() {
     }
   }, []);
 
+  useEffect(() => {
+    getAcctDetails(user)
+  }, [user])
+
   async function transfer() {
     try {
       setLoading(true);
@@ -99,7 +103,6 @@ export default function WithdrawPage() {
         content: `You have transferred ${state.amount} to ${state.receiver}`,
         header: 'Operation Success',
       });
-      getAcctDetails(user);
     } catch (error) {
       setMsg({
         type: 'DANGER',
@@ -127,7 +130,6 @@ export default function WithdrawPage() {
       const accounts = await web3.eth.getAccounts();
       if (!user) {
       } else {
-        setPageLoading(true);
         const acctInstance = Acct(user.acctAddress);
         const summary = await acctInstance.methods.getAccountDetails().call({
           from: accounts[0],
@@ -173,7 +175,6 @@ export default function WithdrawPage() {
           },
         ];
 
-        setPageLoading(false);
         setBal(bal);
       }
     } catch (error) {
@@ -183,6 +184,9 @@ export default function WithdrawPage() {
         content: error.message,
       });
     }
+  }
+  function openProfile(){
+    router.replace('/user/profile')
   }
   return (
     <Fragment>
@@ -196,6 +200,7 @@ export default function WithdrawPage() {
       </Dimmer>
       <SidebarComponent user={user} visible={sidebarVisble}>
         <DashboardNav
+        openProfile={openProfile}
           bal={bal}
           page="Transfer Ether"
           setSidebar={() => setSidebar((state) => !state)}

@@ -79,6 +79,8 @@ export default function Transactions(props: any) {
         return 'Create Accounts';
       case '7':
         return 'Create Account';
+      default:
+        return ''
     }
   }
 
@@ -134,7 +136,7 @@ export default function Transactions(props: any) {
         <Table.Row key={i}>
           <Table.Cell>{++i}</Table.Cell>
           <Table.Cell>{trx.nonce}</Table.Cell>
-          <Table.Cell>{trx.hash}</Table.Cell>
+          <Table.Cell><p onClick = {() => window.open(`https://rinkeby.etherscan.io/tx/${trx.hash}`)}>{trx.hash}</p></Table.Cell>
           <Table.Cell>{trx.from}</Table.Cell>
           <Table.Cell>{trx.to}</Table.Cell>
           <Table.Cell>{trx.gas}</Table.Cell>

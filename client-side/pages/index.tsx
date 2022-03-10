@@ -14,6 +14,7 @@ import web3 from '../ethereum/web3-config';
 import {useRouter} from 'next/router';
 
 import classes from '../styles/Home.module.css';
+import { TransactionType } from './admin/transactions';
 
 const services: Service[] = [
   {
@@ -78,8 +79,8 @@ const Home: NextPage = (props: Props) => {
       curUserAddress: accounts[0],
     });
   }
-  function getTokenDetails(token: Token, action: string) {
-    if (action === 'BUYTOKEN') {
+  function getTokenDetails(token: Token, action: TransactionType) {
+    if (action === TransactionType.BUY_TOKEN) {
       setState({
         ...state,
         curContractAddress: token.address,
@@ -116,7 +117,7 @@ const Home: NextPage = (props: Props) => {
             <Grid>
               <Grid.Row>
                 {/* <Container> */}
-                <Grid.Column width="8">
+                <Grid.Column largeScreen="8" mobile = '16'>
                   <h1>Welcome to BITWallet</h1>
                   <h3>
                     Your <strong>Fast</strong> and <strong>Secure</strong>{' '}
@@ -129,7 +130,7 @@ const Home: NextPage = (props: Props) => {
                     Create Your Wallet
                   </Button>
                 </Grid.Column>
-                <Grid.Column width="8">
+                <Grid.Column largeScreen="8" mobile = '16'>
                   <Image width={400} height={300} src="/images/saving.png" />
                 </Grid.Column>
                 {/* </Container> */}

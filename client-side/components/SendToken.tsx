@@ -36,7 +36,7 @@ export default function SendToken(props: Props) {
       setLoading(true);
       setMsg(undefined);
         const tokenContract = await getToken(props.contractAddress);
-        await tokenContract.methods.sendUserSomeToken(state.recipiant, state.amount.toString()).send({
+        await tokenContract.methods.sendUserSomeToken(state.recipiant, web3.utils.toWei(state.amount.toString(), 'ether')).send({
           from: props.userAddress
         }).on('transactionHash', (hash : string) => {
           props.pushTransaction(hash)
@@ -100,7 +100,7 @@ export default function SendToken(props: Props) {
               style={{width: '80%'}}
               label="Recipiant Address"
               size="big"
-              placeholder="Enter your Address"
+              placeholder="Enter recipiant Address"
               value={state.recipiant}
               onChange={(e) =>
                 setState({
@@ -115,7 +115,7 @@ export default function SendToken(props: Props) {
               style={{width: '80%'}}
               label="Amount"
               size="big"
-              placeholder={`enter amount in ether`}
+              placeholder={`enter amount of ${props.tokenName} you want to send`}
               value={state.amount}
               onChange={(e) => {
                 setState({

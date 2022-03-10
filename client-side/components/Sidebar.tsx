@@ -110,7 +110,6 @@ export default function SidebarComponent(props: Props) {
               <Image style={{margin: '20px 0'}} src="/images/user.png" />
               {props.user ? props.user.username : ''}
               <br />
-              {props.user ? props.user.email : ''}
             </Menu.Item>
             <Link href="/admin/dashboard">
               <Menu.Item style={{color: 'white'}}>

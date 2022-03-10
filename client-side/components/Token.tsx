@@ -1,6 +1,7 @@
 import {Card, Icon, Image, Grid, Button} from 'semantic-ui-react';
 import User from '../models/user';
 import { Role } from '../store/types';
+import { TransactionType } from '../pages/admin/transactions';
 
 export interface Token {
   name: string;
@@ -17,7 +18,7 @@ export enum TokenType {
 
 type Props = {
   tokens: Token[];
-  getTokenDetails: (token : Token, action: string) => void,
+  getTokenDetails: (token : Token, action: TransactionType) => void,
   tokenType: TokenType
 };
 
@@ -30,7 +31,7 @@ export default function Tokens(props: Props) {
             
             <Image  wrapped src={`/images/${tk.imageUrl}`} ui={false} />
             <Card.Content>
-              <Card.Header>
+              <Card.Header style = {{color: 'blue'}}>
                 {tk.name} ({tk.symbol})
               </Card.Header>
               <Card.Meta>{tk.address}</Card.Meta>
@@ -42,17 +43,17 @@ export default function Tokens(props: Props) {
             <Card.Content extra>
               <div className = 'ui two buttons'>
                 {(props.tokenType === TokenType.GUEST || props.tokenType === TokenType.USER) && <Button basic color = 'blue' onClick = {() => {
-                  props.getTokenDetails(tk, 'BUYTOKEN')
+                  props.getTokenDetails(tk, TransactionType.BUY_TOKEN)
                 }}>
                   Buy {tk.name}
                 </Button>}
                 { props.tokenType === TokenType.ADMIN && <Button basic color = 'orange' onClick = {() => {
-                  props.getTokenDetails(tk, 'MINT')
+                  props.getTokenDetails(tk, TransactionType.MINT_TOKEN)
                 }}>
                     Mint Token
                 </Button>}
                 { props.tokenType === TokenType.USER && <Button basic color = 'orange' onClick = {() => {
-                  props.getTokenDetails(tk, 'SEND')
+                  props.getTokenDetails(tk, TransactionType.SEND_TOKEN)
                 }}>
                     Send Token
                 </Button>}

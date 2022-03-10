@@ -49,7 +49,7 @@ interface TokenState {
   curTokenName: string;
   curUserAddress: string;
   curContractAddress: string;
-  type: string;
+  type: TransactionType;
 }
 
 export async function getStaticProps() {
@@ -74,7 +74,7 @@ export default function Dashboard(props: Props) {
     curTokenName: '',
     curUserAddress: '',
     showBuyTokenModal: false,
-    type: '',
+    type: -1,
     showSendToken: false,
   });
   const [acctDetails, setAcctDetails] = useState<CardItemsType[]>([]);
@@ -120,15 +120,15 @@ export default function Dashboard(props: Props) {
     setCurAddress(accounts[0]);
   }
 
-  function getTokenDetails(token: Token, action: string) {
-    if (action == 'BUYTOKEN') {
+  function getTokenDetails(token: Token, type: TransactionType) {
+    if (type == TransactionType.BUY_TOKEN) {
       setTokenState({
         ...tokenState,
         showBuyTokenModal: true,
         curContractAddress: token.address,
         curTokenName: token.name,
         curUserAddress: curAddress,
-        type: action,
+        type: type,
       });
     } else {
       setTokenState({
@@ -137,7 +137,7 @@ export default function Dashboard(props: Props) {
         curContractAddress: token.address,
         curTokenName: token.name,
         curUserAddress: curAddress,
-        type: action,
+        type: type,
       });
     }
   }
@@ -240,7 +240,11 @@ export default function Dashboard(props: Props) {
   }
 
   function pushTransactions(hash: string) {
-    dispatch(addTransactionToDB(user.uid, hash, TransactionType.MINT_TOKEN));
+    dispatch(addTransactionToDB(user.uid, hash, tokenState.type));
+  }
+
+  function openProfile(){
+    router.replace('/user/profile')
   }
 
   return (
@@ -281,6 +285,7 @@ export default function Dashboard(props: Props) {
           showModal={tokenState.showBuyTokenModal}
         />
         <DashboardNav
+        openProfile= {openProfile}
           bal={bal}
           user={user}
           logout={handleLogout}

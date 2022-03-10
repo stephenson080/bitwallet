@@ -17,7 +17,6 @@ import {getTransactionsFromDB} from '../../store/actions/user-actions';
 import {Store} from '../_app';
 import User from '../../models/user';
 
-
 export enum TransactionType {
   MINT_TOKEN,
   BUY_TOKEN,
@@ -43,8 +42,8 @@ export default function Transactions(props: any) {
 
   useEffect(() => {
     getAcct();
-    if (user){
-      return
+    if (user) {
+      return;
     }
     const userId = localStorage.getItem('userId');
     if (userId) {
@@ -52,7 +51,7 @@ export default function Transactions(props: any) {
       dispatch(
         autoLogin(userId, (us) => {
           setPageLoading(false);
-          if(us) {
+          if (us) {
             if (us.role === Role.Admin) {
               router.replace('/admin/dashboard');
             }
@@ -125,12 +124,15 @@ export default function Transactions(props: any) {
     );
   }
 
+  useEffect(() => {
+    getAcctDetails(user)
+  }, [user])
+
   async function getAcctDetails(user: User) {
     try {
       const accounts = await web3.eth.getAccounts();
       if (!user) {
       } else {
-        setPageLoading(true);
         const acctInstance = Acct(user.acctAddress);
         const summary = await acctInstance.methods.getAccountDetails().call({
           from: accounts[0],
@@ -176,7 +178,6 @@ export default function Transactions(props: any) {
           },
         ];
 
-        setPageLoading(false);
         setBal(bal);
       }
     } catch (error) {
@@ -202,7 +203,15 @@ export default function Transactions(props: any) {
         <Table.Row key={i}>
           <Table.Cell>{++i}</Table.Cell>
           <Table.Cell>{trx.nonce}</Table.Cell>
-          <Table.Cell>{trx.hash}</Table.Cell>
+          <Table.Cell>
+        <p style = {{cursor: 'pointer', color: 'blue', }}
+              onClick={() =>
+                window.open(`https://rinkeby.etherscan.io/tx/${trx.hash}`)
+              }
+            >
+              {trx.hash}
+            </p>
+          </Table.Cell>
           <Table.Cell>{trx.from}</Table.Cell>
           <Table.Cell>{trx.to}</Table.Cell>
           <Table.Cell>{trx.gas}</Table.Cell>
@@ -213,6 +222,9 @@ export default function Transactions(props: any) {
         </Table.Row>
       ))
     );
+  }
+  function openProfile(){
+    router.replace('/user/profile')
   }
   return (
     <SidebarComponent user={user} visible={sidebarVisibility}>
@@ -225,6 +237,7 @@ export default function Transactions(props: any) {
         </Loader>
       </Dimmer>
       <DashboardNav
+      openProfile={openProfile}
         bal={bal}
         user={user}
         logout={handleLogout}

@@ -26,22 +26,30 @@ import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
 import {getCRMToken, getFmtToken, getQmToken} from '../../ethereum/token';
 
-interface DepositState {
-  amount: string;
+interface ProfileState {
+  user_address: string;
+  newPassword: string
+  confirmPassword: string
 }
 
-export default function DepositPage() {
+
+export default function ProfilePage() {
   const [sidebarVisble, setSidebar] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMsg] = useState<MessageType>();
-  const [state, setState] = useState<DepositState>({
-    amount: '',
+
+  const user = useSelector<Store, User>((state) => state.auth.user!);
+
+  const [state, setState] = useState<ProfileState>({
+    user_address: user ? user.user_address : '',
+    newPassword: '',
+    confirmPassword: ''
   });
   const [bal, setBal] = useState<Balances[]>([]);
 
-  const user = useSelector<Store, User>((state) => state.auth.user!);
+  
 
   const router = useRouter();
 
@@ -135,7 +143,7 @@ export default function DepositPage() {
     }
   }
 
-  async function deposit() {
+  async function update() {
     try {
       setLoading(true);
       setSuccess(false);
@@ -144,7 +152,7 @@ export default function DepositPage() {
         .methods.depositFunds()
         .send({
           from: user.user_address,
-          value: web3.utils.toWei(state.amount.toString()),
+          value: web3.utils.toWei(state.user_address.toString()),
         })
         .on('transactionHash', (hash: string) => {
           dispatch(addTransactionToDB(user.uid, hash, TransactionType.DEPOSIT));
@@ -153,7 +161,7 @@ export default function DepositPage() {
       setSuccess(true);
       setMsg({
         type: 'SUCCESS',
-        content: `You have deposited ${state.amount} to your Account`,
+        content: `You have deposited ${state.user_address} to your Account`,
         header: 'Operation Success',
       });
       
@@ -212,24 +220,47 @@ export default function DepositPage() {
             maxWidth: '45rem',
           }}
         >
-          <Image centered src="/images/deposit.png" width={100} height={100} />
+          <Image centered src="/images/user.png" width={100} height={100} />
           <Form
             style={{marginTop: '30px'}}
             error={!!message?.content}
             size="large"
           >
             <Form.Input
-              type="text"
-              required
+              type="email"
+              disabled
               style={{width: '100%', margin: '18px 0'}}
-              label="Amount"
+              label="Email"
               size="big"
-              placeholder="enter amount you want to deposit"
-              value={state.amount}
+              value={user.email}
+            />
+            <Form.Input
+              type="text"
+              disabled
+              style={{width: '100%', margin: '18px 0'}}
+              label="Username"
+              size="big"
+              value={user.username}
+            />
+            <Form.Input
+              type="text"
+              disabled
+              style={{width: '100%', margin: '18px 0'}}
+              label="Account Address"
+              size="big"
+              value={user.acctAddress}
+            />
+            <Form.Input
+              type="text"
+              style={{width: '100%', margin: '18px 0'}}
+              label="User Address"
+              size="big"
+              placeholder="enter your Address"
+              value={state.user_address}
               onChange={(e) =>
                 setState({
                   ...state,
-                  amount: e.target.value,
+                  user_address: e.target.value,
                 })
               }
             />
@@ -242,8 +273,8 @@ export default function DepositPage() {
                 alignItems: 'center',
               }}
             >
-              <Button onClick={deposit} loading={loading} primary>
-                Deposit Ether
+              <Button onClick={update} loading={loading} primary>
+                Update Profile
               </Button>
             </div>
 

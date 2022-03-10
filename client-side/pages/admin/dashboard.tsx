@@ -141,8 +141,8 @@ export default function AdminDashboard(props: Props) {
     }
   }
 
-  function getTokenDetails(token: Token, action: string) {
-    if (action === 'MINT') {
+  function getTokenDetails(token: Token, action: TransactionType) {
+    if (action === TransactionType.MINT_TOKEN) {
       setMintState({
         ...mintState,
         showBuyTokenModal: true,
@@ -272,6 +272,7 @@ export default function AdminDashboard(props: Props) {
           showModal={mintState.showBuyTokenModal}
         />
         <DashboardNav
+          openProfile= {undefined}
           bal={undefined}
           user={user}
           logout={handleLogout}

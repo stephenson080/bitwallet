@@ -64,6 +64,10 @@ export default function WithdrawPage() {
     }
   }, []);
 
+  useEffect(() => {
+    getAcctDetails(user)
+  }, [user])
+
   async function withdraw() {
     try {
       setLoading(true);
@@ -87,7 +91,6 @@ export default function WithdrawPage() {
         content: `You have withdrawn ${state.amount} to your Account`,
         header: 'Operation Success',
       });
-      getAcctDetails(user)
     } catch (error) {
       setMsg({
         type: 'DANGER',
@@ -102,7 +105,6 @@ export default function WithdrawPage() {
       const accounts = await web3.eth.getAccounts();
       if (!user) {
       } else {
-        setPageLoading(true);
         const acctInstance = Acct(user.acctAddress);
         const summary = await acctInstance.methods.getAccountDetails().call({
           from: accounts[0],
@@ -147,8 +149,6 @@ export default function WithdrawPage() {
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
           },
         ];
-
-        setPageLoading(false);
         setBal(bal);
       }
     } catch (error) {
@@ -172,6 +172,9 @@ export default function WithdrawPage() {
       })
     );
   }
+  function openProfile(){
+    router.replace('/user/profile')
+  }
   return (
     <Fragment>
       <Head>
@@ -184,6 +187,7 @@ export default function WithdrawPage() {
       </Dimmer>
       <SidebarComponent user={user} visible={sidebarVisble}>
         <DashboardNav
+        openProfile={openProfile}
           bal={bal}
           page="Withdraw Ether"
           setSidebar={() => setSidebar((state) => !state)}
