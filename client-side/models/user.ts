@@ -97,6 +97,22 @@ class User {
     }
   }
 
+  async changeUserAddress() {
+    try {
+      await setDoc(doc(firestore, 'users', this.uid), {
+        uid: this.uid,
+        username: this.username,
+        email: this.email,
+        emailVerified: this.emailVerified,
+        user_address: this.user_address,
+        role: this.role,
+        acctAddress: this.acctAddress ? this.acctAddress :null
+      });
+    } catch (error) {
+      throw error
+    }
+  }
+
 }
 
 export default User;

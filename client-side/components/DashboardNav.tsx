@@ -15,8 +15,8 @@ type Props = {
   page: string;
   logout: () => void;
   user: User;
-  bal: Balances[] | undefined;
-  openProfile: (() => void) | undefined
+  bal?: Balances[] | undefined;
+  openProfile?: () => void
 };
 
 export default function DashboardNav(props: Props) {

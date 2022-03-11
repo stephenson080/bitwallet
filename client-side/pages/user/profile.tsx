@@ -4,7 +4,11 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import SidebarComponent from '../../components/Sidebar';
 import DashboardNav, {Balances} from '../../components/DashboardNav';
-import {logout, autoLogin} from '../../store/actions/auth_action';
+import {
+  logout,
+  autoLogin,
+  setuserAddress,
+} from '../../store/actions/auth_action';
 
 import {Store} from '../_app';
 import User from '../../models/user';
@@ -28,10 +32,9 @@ import {getCRMToken, getFmtToken, getQmToken} from '../../ethereum/token';
 
 interface ProfileState {
   user_address: string;
-  newPassword: string
-  confirmPassword: string
+  newPassword: string;
+  confirmPassword: string;
 }
-
 
 export default function ProfilePage() {
   const [sidebarVisble, setSidebar] = useState(false);
@@ -45,20 +48,33 @@ export default function ProfilePage() {
   const [state, setState] = useState<ProfileState>({
     user_address: user ? user.user_address : '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [bal, setBal] = useState<Balances[]>([]);
 
-  
+  const msg = useSelector<Store, MessageType>((state) => state.auth.message);
 
   const router = useRouter();
 
   const dispatch = useDispatch();
 
+  
+
+  useEffect(() => {
+    if (msg.type === 'SUCCESS') {
+      setSuccess(true);
+    }
+    setMsg({
+      type: msg.type,
+      content: msg.content,
+      header: msg.header,
+    });
+  }, [msg]);
+
   useEffect(() => {
     const userId = localStorage.getItem('userId');
-    if (user){
-      return
+    if (user) {
+      return;
     }
     if (userId) {
       setPageLoading(true);
@@ -80,8 +96,13 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    getAcctDetails(user)
-  }, [user])
+    getAcctDetails(user);
+  }, [user]);
+
+  useEffect(() => {
+    
+    setMsg(undefined);
+  }, []);
 
   async function getAcctDetails(user: User) {
     try {
@@ -149,23 +170,33 @@ export default function ProfilePage() {
       setSuccess(false);
       setMsg(undefined);
       await Acct(user.acctAddress)
-        .methods.depositFunds()
+        .methods.setUserAddress(state.user_address)
         .send({
           from: user.user_address,
-          value: web3.utils.toWei(state.user_address.toString()),
         })
         .on('transactionHash', (hash: string) => {
-          dispatch(addTransactionToDB(user.uid, hash, TransactionType.DEPOSIT));
+          dispatch(
+            addTransactionToDB(
+              user.uid,
+              hash,
+              TransactionType.CHANGE_USERADDRESS
+            )
+          );
         });
-      setLoading(false);
-      setSuccess(true);
-      setMsg({
-        type: 'SUCCESS',
-        content: `You have deposited ${state.user_address} to your Account`,
-        header: 'Operation Success',
-      });
-      
+      const updatedUser = new User(
+        user.uid,
+        user.email,
+        user.emailVerified,
+        state.user_address,
+        user.username,
+        user.role,
+        user.acctAddress
+      );
+      dispatch(setuserAddress(updatedUser, (m ) => {
+        setLoading(false);
+      }));
     } catch (error) {
+      setLoading(false)
       setMsg({
         type: 'DANGER',
         content: `${error.message}`,
@@ -186,13 +217,13 @@ export default function ProfilePage() {
       })
     );
   }
-  function openProfile(){
-    router.replace('/user/profile')
+  function openProfile() {
+    router.replace('/user/profile');
   }
   return (
     <Fragment>
       <Head>
-        <title>Deposit</title>
+        <title>Profile</title>
       </Head>
       <Dimmer active={pageLoading}>
         <Loader size="massive" indeterminate>
@@ -203,7 +234,7 @@ export default function ProfilePage() {
         <DashboardNav
           openProfile={openProfile}
           bal={bal}
-          page="Deposit Ether"
+          page="My Profile"
           setSidebar={() => setSidebar((state) => !state)}
           sideBarVisibility={sidebarVisble}
           user={user}
@@ -232,7 +263,7 @@ export default function ProfilePage() {
               style={{width: '100%', margin: '18px 0'}}
               label="Email"
               size="big"
-              value={user.email}
+              value={user ? user.email : ''}
             />
             <Form.Input
               type="text"
@@ -240,7 +271,7 @@ export default function ProfilePage() {
               style={{width: '100%', margin: '18px 0'}}
               label="Username"
               size="big"
-              value={user.username}
+              value={user ? user.username : ''}
             />
             <Form.Input
               type="text"
@@ -248,7 +279,7 @@ export default function ProfilePage() {
               style={{width: '100%', margin: '18px 0'}}
               label="Account Address"
               size="big"
-              value={user.acctAddress}
+              value={user ? user.acctAddress : ''}
             />
             <Form.Input
               type="text"

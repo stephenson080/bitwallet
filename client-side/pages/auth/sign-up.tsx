@@ -59,9 +59,12 @@ export default function Signup(props: Props) {
       user_address: accounts[0],
     });
   }
+  useEffect(() => {
+    
+    setMsg(undefined);
+  }, []);
   const createWallet = async () => {
     const accounts = await web3.eth.getAccounts();
-    console.log(accounts)
     setLoading(true);
     setMsg(undefined);
     setSuccess(false);

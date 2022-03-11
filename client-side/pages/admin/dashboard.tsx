@@ -272,7 +272,6 @@ export default function AdminDashboard(props: Props) {
           showModal={mintState.showBuyTokenModal}
         />
         <DashboardNav
-          openProfile= {undefined}
           bal={undefined}
           user={user}
           logout={handleLogout}

@@ -30,6 +30,7 @@ export enum TransactionType {
 
 export default function Transactions(props: any) {
   const [sidebarVisibility, setVisibility] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [curAddress, setCurAddress] = useState('');
   const [message, setMsg] = useState<MessageType>();
   const [trxs, setTrxs] = useState<any[]>([]);
@@ -83,12 +84,17 @@ export default function Transactions(props: any) {
         return 'Create Accounts';
       case '7':
         return 'Create Account';
+      case '8':
+        return 'Change User Address'
+      default:
+        return ''
     }
   }
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (userId) {
+      setLoading(true)
       dispatch(
         getTransactionsFromDB(userId, async (trxs) => {
           let transact: any[] = [];
@@ -102,6 +108,7 @@ export default function Transactions(props: any) {
             }
             setTrxs(transact);
           }
+          setLoading(false)
         })
       );
     }
@@ -190,10 +197,17 @@ export default function Transactions(props: any) {
   }
 
   function rendertransactions() {
+    if (loading){
+      return (
+        <Table.Row >
+          <Table.Cell >Getting your Transactions... Please wait!</Table.Cell>
+        </Table.Row>
+      );
+    }
     if (trxs.length === 0) {
       return (
-        <Table.Row>
-          <Table.Cell>No Transaction to show</Table.Cell>
+        <Table.Row >
+          <Table.Cell >No Transaction to show</Table.Cell>
         </Table.Row>
       );
     }
@@ -249,7 +263,7 @@ export default function Transactions(props: any) {
         <h1 style={{fontWeight: 'bolder', fontSize: '2rem', margin: '25px 0'}}>
           Transactions
         </h1>
-        <Table color="blue" fixed singleLine>
+        <Table color="blue" fixed singleLine selectable size = 'large' >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>S/N</Table.HeaderCell>
