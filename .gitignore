@@ -10,11 +10,19 @@
 /coverage
 
 # next.js
-/.next/
+/client-side/.next/
+/clint-side/.env
 /out/
 
 # production
 /build
+/client-side/build
+
+# smart contract
+/artifacts
+/cache
+/data
+/test
 
 # misc
 .DS_Store
