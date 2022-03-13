@@ -26,7 +26,7 @@ export default function Footer() {
     return myMedia.map((media, i) => (
       <Link key={i} href={media.url}>
         <a>
-          <Icon size="big" name={media.name} color="blue" />
+          <Icon size="mini" name={media.name} color="blue" />
         </a>
       </Link>
     ));
@@ -65,6 +65,7 @@ export default function Footer() {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+            wordWrap: 'break-word'
           }}
         >
           {renderMedia()}
