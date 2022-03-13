@@ -73,9 +73,9 @@ export default function Footer(props : Props) {
           }}
         >
           {renderMedia()}
-          <h3 style={{color: 'orange', marginBottom: '20px'}}>
+          <h6 style={{color: 'orange', marginBottom: '20px'}}>
             Developer| PathTech
-          </h3>
+          </h6>
         </div>
       </div>
     </footer>
