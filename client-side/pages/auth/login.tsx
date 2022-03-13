@@ -62,22 +62,14 @@ export default function Login() {
           }
         })
       );
+      getAcct();
     }
-    getAcct();
   }, []);
   async function getAcct() {
     const accounts = await web3.eth.getAccounts();
     setCurAddress(accounts[0]);
   }
   async function setDependencies() {
-    if (msg.type === 'SUCCESS') {
-      setSuccess(true);
-    }
-    setMsg({
-      type: msg.type,
-      content: msg.content,
-      header: msg.header,
-    });
     if (user) {
       const accounts = await web3.eth.getAccounts();
       if (user.user_address !== accounts[0]) {
@@ -87,7 +79,21 @@ export default function Login() {
           header: 'Warning',
         });
         setSuccess(false);
+      } else if (user.acctAddress === undefined && user.role === Role.User) {
+        setMsg({
+          type: 'DANGER',
+          header: 'WARNING',
+          content:
+            "Sorry, you can't Login cause your account has not been verified yet",
+        });
+        setSuccess(false);
       } else {
+        setSuccess(true)
+        setMsg({
+          type: msg.type,
+          content: msg.content,
+          header: msg.header
+        })
         localStorage.setItem('userId', user.uid);
         if (user.role === Role.Admin) {
           router.replace('/admin/dashboard');
@@ -133,7 +139,11 @@ export default function Login() {
         <Container>
           <Grid>
             <Grid.Row>
-              <Grid.Column verticalAlign = 'middle' largeScreen="eight" mobile="16">
+              <Grid.Column
+                verticalAlign="middle"
+                largeScreen="eight"
+                mobile="16"
+              >
                 <h1 style={{marginBottom: '15px'}}>Login to Your BITWallet</h1>
               </Grid.Column>
               <Grid.Column largeScreen="eight" mobile="16">
@@ -217,7 +227,7 @@ export default function Login() {
 
                     <Message
                       success={success}
-                      style={{width: '50%'}}
+                      style={{width: '70%'}}
                       error
                       content={message?.content}
                       header={message?.header}

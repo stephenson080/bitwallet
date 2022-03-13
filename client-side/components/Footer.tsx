@@ -6,6 +6,10 @@ type Media = {
   url: string;
 };
 
+type Props = {
+    show: boolean
+}
+
 const myMedia: Media[] = [
   {
     name: 'linkedin',
@@ -21,7 +25,7 @@ const myMedia: Media[] = [
   },
 ];
 
-export default function Footer() {
+export default function Footer(props : Props) {
   function renderMedia() {
     return myMedia.map((media, i) => (
       <Link key={i} href={media.url}>
@@ -32,8 +36,8 @@ export default function Footer() {
     ));
   }
   return (
-    <footer style={{backgroundColor: 'black', color: 'white', padding: '20px'}}>
-      <div
+    <footer style={{backgroundColor: 'black', color: 'white', padding: '20px', margin: '0'}}>
+      {props.show && (<div
         style={{
           margin: '30px auto',
           width: '60%',
@@ -48,7 +52,7 @@ export default function Footer() {
           BITWallet is DApp built on Ethereum Rinkeby blockchain network use for
           depositing, withdrawing and sending test ether
         </p>
-      </div>
+      </div>)}
       <div
         style={{
           display: 'flex',

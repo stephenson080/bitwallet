@@ -141,7 +141,7 @@ export function Signin(
           message: {
             type: 'SUCCESS',
             header: 'Operation Success',
-            content: 'Login Successful wait while you are redirected',
+            content: 'Login Successful checking your account...',
           },
           user: user,
         },
@@ -180,7 +180,6 @@ export function forgotPass(data: ForgotState, cb: (m: string) => void) {
       });
       cb('SUCCESS');
     } catch (error) {
-      console.log(error);
       cb('DANGER');
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,

@@ -15,6 +15,7 @@ import {logout, autoLogin} from '../../store/actions/auth_action';
 import User from '../../models/user';
 import {Customer} from './dashboard';
 import {Store} from '../_app';
+import Footer from '../../components/Footer';
 
 export default function Customers(props: any) {
   const [sidebarVisibility, setVisibility] = useState(false);
@@ -151,6 +152,7 @@ export default function Customers(props: any) {
           <Table.Body>{renderCustomers()}</Table.Body>
         </Table>
       </Container>
+      <Footer show = {false} />
     </SidebarComponent>
   );
 }

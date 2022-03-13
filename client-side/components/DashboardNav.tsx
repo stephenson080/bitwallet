@@ -41,6 +41,7 @@ export default function DashboardNav(props: Props) {
         borderBottomLeftRadius: '20px',
         borderBottomRightRadius: '20px',
         backgroundColor: 'white',
+        margin: '0'
       }}
     >
       <div
@@ -52,12 +53,11 @@ export default function DashboardNav(props: Props) {
           padding: '20px',
         }}
       >
-        <div style={{fontSize: '1.5rem'}}>
+        <div style={{fontSize: '1.2rem'}}>
           <p onClick={props.setSidebar}>
             <Icon
               link
-              fitted
-              size="big"
+              size="small"
               name={props.sideBarVisibility ? 'cancel' : 'bars'}
             />
             {bal()}
@@ -69,7 +69,7 @@ export default function DashboardNav(props: Props) {
           floating
           labeled
           button
-          style = {{backgroundColor: 'orange', color: 'white'}}
+          style = {{backgroundColor: 'orange', color: 'white', fontSize: '12px'}}
           className="icon"
         >
           <Dropdown.Menu >

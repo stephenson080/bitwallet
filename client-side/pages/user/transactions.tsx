@@ -16,6 +16,7 @@ import {logout, autoLogin} from '../../store/actions/auth_action';
 import {getTransactionsFromDB} from '../../store/actions/user-actions';
 import {Store} from '../_app';
 import User from '../../models/user';
+import Footer from '../../components/Footer';
 
 export enum TransactionType {
   MINT_TOKEN,
@@ -279,6 +280,7 @@ export default function Transactions(props: any) {
           <Table.Body>{rendertransactions()}</Table.Body>
         </Table>
       </Container>
+      <Footer show = {false} />
     </SidebarComponent>
   );
 }

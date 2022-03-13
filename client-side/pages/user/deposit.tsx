@@ -25,6 +25,7 @@ import web3 from '../../ethereum/web3-config';
 import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
 import {getCRMToken, getFmtToken, getQmToken} from '../../ethereum/token';
+import Footer from '../../components/Footer';
 
 interface DepositState {
   amount: string;
@@ -249,13 +250,14 @@ export default function DepositPage() {
 
             <Message
               success={success}
-              style={{width: '50%'}}
+              style={{width: '70%'}}
               error
               content={message?.content}
               header={message?.header}
             />
           </Form>
         </div>
+        <Footer show = {false} />
       </SidebarComponent>
     </Fragment>
   );

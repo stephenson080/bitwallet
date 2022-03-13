@@ -138,7 +138,7 @@ const Home: NextPage = (props: Props) => {
                     onClick={() => router.replace('/auth/sign-up')}
                     color="blue"
                   >
-                    Create Your Wallet
+                    Get Started
                   </Button>
                 </Grid.Column>
                 <Grid.Column largeScreen="8" mobile="16">
@@ -192,7 +192,7 @@ const Home: NextPage = (props: Props) => {
           </Container>
         </div>
       </div>
-      <Footer />
+      <Footer show = {false} />
     </div>
   );
 };

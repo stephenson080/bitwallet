@@ -45,6 +45,7 @@ export default function Signup(props: Props) {
   useEffect(() => {
     if (msg.type === 'SUCCESS') {
       setSuccess(true);
+      return
     }
     setMsg({
       content: msg.content,
@@ -76,6 +77,11 @@ export default function Signup(props: Props) {
               .createAccountRequest(state.username)
               .send({from: accounts[0]});
             setLoading(false);
+            setMsg({
+              type: 'SUCCESS',
+              content: 'You have created an account. Please wait for admin to create your wallet',
+              header: 'Operation Success'
+            })
           } catch (error) {
             setMsg({
               content: error.message,
@@ -103,13 +109,13 @@ export default function Signup(props: Props) {
             name={loading ? 'asterisk' : 'add circle'}
           />{' '}
           {loading
-            ? 'Creating Your Wallet! Please Wait...'
-            : 'Create Your BITWallet'}
+            ? 'Creating Your Account! Please Wait...'
+            : 'Create Your Account'}
         </Modal.Header>
         <Modal.Content>
           <Container>
             <h5 style={{marginLeft: '28px'}}>
-              Fill in the Form to create a new Wallet
+              Fill in the Form to create a new account
             </h5>
             <Form
               style={{marginTop: '55px', marginLeft: '28px'}}
@@ -174,7 +180,7 @@ export default function Signup(props: Props) {
               />
               <Message
                 success={success}
-                style={{width: '50%'}}
+                style={{width: '70%'}}
                 error
                 content={message?.content}
                 header={message?.header}

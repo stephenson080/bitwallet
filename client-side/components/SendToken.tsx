@@ -126,7 +126,7 @@ export default function SendToken(props: Props) {
             />
             <Message
               success={success}
-              style={{width: '50%'}}
+              style={{width: '70%'}}
               error
               content={message?.content}
               header={message?.header}

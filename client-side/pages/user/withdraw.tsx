@@ -17,6 +17,7 @@ import {logout, autoLogin} from '../../store/actions/auth_action';
 import {MessageType, Role} from '../../store/types';
 import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
+import Footer from '../../components/Footer';
 
 
 interface WithdrawState {
@@ -243,13 +244,14 @@ export default function WithdrawPage() {
 
             <Message
               success={success}
-              style={{width: '50%'}}
+              style={{width: '70%'}}
               error
               content={message?.content}
               header={message?.header}
             />
           </Form>
         </div>
+        <Footer show = {false} />
       </SidebarComponent>
     </Fragment>
   );

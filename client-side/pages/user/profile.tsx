@@ -29,6 +29,7 @@ import web3 from '../../ethereum/web3-config';
 import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
 import {getCRMToken, getFmtToken, getQmToken} from '../../ethereum/token';
+import Footer from '../../components/Footer';
 
 interface ProfileState {
   user_address: string;
@@ -166,13 +167,14 @@ export default function ProfilePage() {
 
   async function update() {
     try {
+      const accounts = await web3.eth.getAccounts()
       setLoading(true);
       setSuccess(false);
       setMsg(undefined);
       await Acct(user.acctAddress)
         .methods.setUserAddress(state.user_address)
         .send({
-          from: user.user_address,
+          from: accounts[0],
         })
         .on('transactionHash', (hash: string) => {
           dispatch(
@@ -311,13 +313,14 @@ export default function ProfilePage() {
 
             <Message
               success={success}
-              style={{width: '50%'}}
+              style={{width: '70%'}}
               error
               content={message?.content}
               header={message?.header}
             />
           </Form>
         </div>
+        <Footer show = {false} />
       </SidebarComponent>
     </Fragment>
   );

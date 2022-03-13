@@ -31,6 +31,7 @@ import {
 } from '../../store/actions/user-actions';
 import {TransactionType} from './transactions';
 import {MessageType, Role} from '../../store/types';
+import Footer from '../../components/Footer';
 
 
 export interface Customer {
@@ -334,6 +335,7 @@ export default function AdminDashboard(props: Props) {
             )}
           </Container>
         </div>
+        <Footer show = {false} />
       </SidebarComponent>
     </Fragment>
   );

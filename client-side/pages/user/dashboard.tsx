@@ -31,6 +31,7 @@ import {addTransactionToDB} from '../../store/actions/user-actions';
 import {TransactionType} from '../admin/transactions';
 
 import Head from 'next/head';
+import Footer from '../../components/Footer';
 
 export interface Customer {
   created: boolean;
@@ -293,7 +294,7 @@ export default function Dashboard(props: Props) {
           sideBarVisibility={sidebarVisble}
           setSidebar={() => setSidebar((visible) => !visible)}
         />
-        <div>
+        <div style ={{margin: '20px 0'}}>
           <Container>
             <h1
               style={{margin: '20px 0', fontWeight: 'bolder', fontSize: '2rem'}}
@@ -315,6 +316,7 @@ export default function Dashboard(props: Props) {
             )}
           </Container>
         </div>
+        <Footer show = {false} />
       </SidebarComponent>
     </Fragment>
   );
