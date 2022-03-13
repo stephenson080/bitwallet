@@ -3,7 +3,6 @@ import Head from 'next/head';
 import {useState, useEffect} from 'react';
 import {Grid, Container, Image, Button} from 'semantic-ui-react';
 
-
 import NavBar from '../components/NavBar';
 import Tokens, {Token, TokenType} from '../components/Token';
 import Services, {Service} from '../components/Services';
@@ -14,7 +13,8 @@ import web3 from '../ethereum/web3-config';
 import {useRouter} from 'next/router';
 
 import classes from '../styles/Home.module.css';
-import { TransactionType } from './admin/transactions';
+import {TransactionType} from './admin/transactions';
+import Notic from '../components/Notic';
 
 const services: Service[] = [
   {
@@ -66,10 +66,12 @@ const Home: NextPage = (props: Props) => {
     curUserAddress: '',
     showBuyTokenModal: false,
   });
+  const [noticOpen, setNotic] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
+    setNotic(true)
     getAcct();
   }, []);
   async function getAcct() {
@@ -94,6 +96,7 @@ const Home: NextPage = (props: Props) => {
       <Head>
         <title>BITWallet | Home</title>
       </Head>
+
       <BuyToken
         pushTransaction={(hash) => {
           return;
@@ -112,12 +115,18 @@ const Home: NextPage = (props: Props) => {
 
       <div style={{backgroundColor: 'whitesmoke'}}>
         <NavBar activeItem="jfn" handleClick={() => {}} />
+        <Notic
+          open={noticOpen}
+          centered={false}
+          size="mini"
+          close={() => setNotic(false)}
+        />
         <div className={classes.main}>
           <Container>
             <Grid>
               <Grid.Row>
                 {/* <Container> */}
-                <Grid.Column largeScreen="8" mobile = '16'>
+                <Grid.Column largeScreen="8" mobile="16">
                   <h1>Welcome to BITWallet</h1>
                   <h3>
                     Your <strong>Fast</strong> and <strong>Secure</strong>{' '}
@@ -130,8 +139,8 @@ const Home: NextPage = (props: Props) => {
                     Create Your Wallet
                   </Button>
                 </Grid.Column>
-                <Grid.Column largeScreen="8" mobile = '16'>
-                  <Image width={400} height={300} src="/images/saving.png" />
+                <Grid.Column largeScreen="8" mobile="16">
+                  <Image width={500} height={300} src="/images/landing-page.png" />
                 </Grid.Column>
                 {/* </Container> */}
               </Grid.Row>
