@@ -11,7 +11,7 @@ export default function Notic(props: Props) {
   return (
     <Modal centered={props.centered} dimmer size={props.size} open={props.open}>
       <Modal.Header style={{backgroundColor: 'blue', color: 'white'}}>
-        Disclaimer
+        Notification
       </Modal.Header>
       <Modal.Content>
         <h5>
@@ -35,18 +35,27 @@ export default function Notic(props: Props) {
         <p>
           click{' '}
           <strong
-            onClick={() =>
-              window.open(
-                'https://metamask.app.link/bxwkE8oF99'
-              )
-            }
+            onClick={() => window.open('https://metamask.app.link/bxwkE8oF99')}
             style={{color: 'orange', cursor: 'pointer', fontStyle: 'italic'}}
           >
             here
           </strong>{' '}
           to download metamask app on your mobile phone
         </p>
-        
+        <p>
+          Once you create wallet on metamask. Then select the
+          Etheruem rinkeby network
+        </p>
+        <p>
+          You can get free test ether{' '}
+          <strong
+            onClick={() => window.open('https://faucets.chain.link/rinkeby')}
+            style={{color: 'orange', cursor: 'pointer', fontStyle: 'italic'}}
+          >
+            here
+          </strong>
+        </p>
+        <p>If you are using metamask mobile app. you have to open this platform in the app</p>
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={props.close} basic color="red">

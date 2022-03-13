@@ -34,7 +34,7 @@ export default function Tokens(props: Props) {
               <Card.Header style = {{color: 'blue'}}>
                 {tk.name} ({tk.symbol})
               </Card.Header>
-              <Card.Meta>{tk.address}</Card.Meta>
+              <Card.Meta style = {{wordWrap: 'break-word'}}>{tk.address}</Card.Meta>
               <Card.Description>
                 Price: {tk.price} ether <br/>
                 {tk.symbol === 'FMT' ? 'Create a Wallet and This free' : 'You can buy this here buy'}

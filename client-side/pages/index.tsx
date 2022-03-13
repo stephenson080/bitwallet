@@ -71,7 +71,7 @@ const Home: NextPage = (props: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    setNotic(true)
+    setNotic(true);
     getAcct();
   }, []);
   async function getAcct() {
@@ -133,6 +133,7 @@ const Home: NextPage = (props: Props) => {
                     Ethereum Wallet
                   </h3>
                   <Button
+                    style={{margin: '20px 0'}}
                     onClick={() => router.replace('/auth/sign-up')}
                     color="blue"
                   >
@@ -140,7 +141,11 @@ const Home: NextPage = (props: Props) => {
                   </Button>
                 </Grid.Column>
                 <Grid.Column largeScreen="8" mobile="16">
-                  <Image width={500} height={300} src="/images/landing-page.png" />
+                  <Image
+                    width={500}
+                    height={300}
+                    src="/images/landing-page.png"
+                  />
                 </Grid.Column>
                 {/* </Container> */}
               </Grid.Row>
