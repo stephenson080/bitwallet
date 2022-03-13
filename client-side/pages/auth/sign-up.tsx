@@ -124,7 +124,7 @@ export default function Signup(props: Props) {
             >
               <Form.Input
                 type="email"
-                style={{width: '80%'}}
+                style={{width: '100%'}}
                 label="Email"
                 size="big"
                 placeholder="enter your email"
@@ -138,7 +138,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="text"
-                style={{width: '80%'}}
+                style={{width: '100%'}}
                 label="Username"
                 size="big"
                 placeholder="enter your username"
@@ -152,7 +152,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="password"
-                style={{width: '80%'}}
+                style={{width: '100%'}}
                 label="Password"
                 size="big"
                 placeholder="enter your password"
@@ -166,7 +166,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="password"
-                style={{width: '80%'}}
+                style={{width: '100%'}}
                 label="Confirm Password"
                 size="big"
                 placeholder="confirm your password"

@@ -98,7 +98,7 @@ export default function BuyToken(props: Props) {
             <Form.Input
               required
               type="text"
-              style={{width: '80%'}}
+              style={{width: '100%'}}
               label="User Address"
               size="big"
               placeholder="Enter your Address"

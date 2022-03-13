@@ -97,7 +97,7 @@ export default function MintToken(props : Props) {
             <Form.Input
               required
               type="text"
-              style={{width: '80%'}}
+              style={{width: '100%'}}
               label={`Amount of ${props.tokenName} to Mint`}
               size="big"
               placeholder={`enter amount of ${props.tokenName}  to mint`}

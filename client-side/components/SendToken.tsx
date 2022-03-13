@@ -97,7 +97,7 @@ export default function SendToken(props: Props) {
             <Form.Input
               required
               type="text"
-              style={{width: '80%'}}
+              style={{width: '100%'}}
               label="Recipiant Address"
               size="big"
               placeholder="Enter recipiant Address"
@@ -112,7 +112,7 @@ export default function SendToken(props: Props) {
             <Form.Input
               required
               type="text"
-              style={{width: '80%'}}
+              style={{width: '100%'}}
               label="Amount"
               size="big"
               placeholder={`enter amount of ${props.tokenName} you want to send`}
