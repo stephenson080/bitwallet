@@ -26,7 +26,7 @@ export default function Footer() {
     return myMedia.map((media, i) => (
       <Link key={i} href={media.url}>
         <a>
-          <Icon size="mini" name={media.name} color="blue" />
+          <Icon size="small" name={media.name} color="blue" />
         </a>
       </Link>
     ));
