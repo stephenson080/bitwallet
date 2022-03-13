@@ -15,6 +15,7 @@ import {useRouter} from 'next/router';
 import classes from '../styles/Home.module.css';
 import {TransactionType} from './admin/transactions';
 import Notic from '../components/Notic';
+import Footer from '../components/Footer';
 
 const services: Service[] = [
   {
@@ -191,6 +192,7 @@ const Home: NextPage = (props: Props) => {
           </Container>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
