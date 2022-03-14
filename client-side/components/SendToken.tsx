@@ -48,7 +48,7 @@ export default function SendToken(props: Props) {
         content: `You have sent ${props.tokenName} to ${state.recipiant}`,
         header: 'Operation Success',
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,

@@ -103,7 +103,7 @@ export function signup(data: SignUpState, cb: (m: string) => Promise<void>) {
         },
       });
       cb('SUCCESS');
-    } catch (error) {
+    } catch (error : any) {
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
         payload: {
@@ -147,7 +147,7 @@ export function Signin(
         },
       });
       cb('SUCCESS', user.user_address);
-    } catch (error) {
+    } catch (error : any) {
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
         payload: {
@@ -179,7 +179,7 @@ export function forgotPass(data: ForgotState, cb: (m: string) => void) {
         },
       });
       cb('SUCCESS');
-    } catch (error) {
+    } catch (error : any) {
       cb('DANGER');
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
@@ -212,7 +212,7 @@ export function autoLogin(uid: string, cb: (user: User | undefined) => void) {
         },
       });
       cb(user);
-    } catch (error) {
+    } catch (error : any) {
       cb(undefined);
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
@@ -244,7 +244,7 @@ export function logout(cb: (m: string) => void) {
         },
       });
       cb('SUCCESS');
-    } catch (error) {
+    } catch (error : any) {
       cb('DANGER');
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
@@ -278,7 +278,7 @@ export function setuserAddress(user: User, cb : (m: string) => void) {
         },
       });
       dispatch
-    } catch (error) {
+    } catch (error : any) {
       cb('DANGER');
 
       dispatch({

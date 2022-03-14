@@ -104,7 +104,7 @@ export default function WithdrawPage() {
         content: `You have transferred ${state.amount} to ${state.receiver}`,
         header: 'Operation Success',
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,
@@ -178,7 +178,7 @@ export default function WithdrawPage() {
 
         setBal(bal);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',

@@ -127,7 +127,7 @@ export default function DepositPage() {
         ];
         setBal(bal);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',
@@ -158,7 +158,7 @@ export default function DepositPage() {
         header: 'Operation Success',
       });
       
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: `${error.message}`,

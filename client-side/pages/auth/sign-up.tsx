@@ -82,7 +82,7 @@ export default function Signup(props: Props) {
               content: 'You have created an account. Please wait for admin to create your wallet',
               header: 'Operation Success'
             })
-          } catch (error) {
+          } catch (error : any) {
             setMsg({
               content: error.message,
               header: 'Some went wrong',

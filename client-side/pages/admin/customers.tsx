@@ -83,7 +83,7 @@ export default function Customers(props: any) {
       }
       setPageLoading(false);
       setCustomers(customers);
-    } catch (error) {
+    } catch (error : any) {
       console.log(error.message);
     }
   }

@@ -133,7 +133,7 @@ export default function AdminDashboard(props: Props) {
         }
       }
       setPendCustomers(pendingCustomers);
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,
@@ -187,7 +187,7 @@ export default function AdminDashboard(props: Props) {
         header: 'Operation Success',
         content: `Your have Created wallet for ${username}`,
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something Went Wrong',

@@ -49,7 +49,7 @@ export default function BuyToken(props: Props) {
         content: `You now have ${props.tokenName}`,
         header: 'Operation Success',
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,

@@ -156,7 +156,7 @@ export default function ProfilePage() {
         ];
         setBal(bal);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',
@@ -197,7 +197,7 @@ export default function ProfilePage() {
       dispatch(setuserAddress(updatedUser, (m ) => {
         setLoading(false);
       }));
-    } catch (error) {
+    } catch (error : any) {
       setLoading(false)
       setMsg({
         type: 'DANGER',

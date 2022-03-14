@@ -218,7 +218,7 @@ export default function Dashboard(props: Props) {
         setBal(bal);
         setAcctDetails(acctDetails);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',

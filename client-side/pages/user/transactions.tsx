@@ -188,7 +188,7 @@ export default function Transactions(props: any) {
 
         setBal(bal);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',

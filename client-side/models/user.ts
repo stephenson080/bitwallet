@@ -15,7 +15,6 @@ const app = getApp();
 const firestore = getFirestore(app);
 
 const userCol = collection(firestore, 'users');
-const auth = getAuth();
 
 class User {
   constructor(
@@ -65,7 +64,7 @@ class User {
         );
       });
       return users[0];
-    } catch (error) {
+    } catch (error : any) {
       throw error;
     }
   }
@@ -108,7 +107,7 @@ class User {
         role: this.role,
         acctAddress: this.acctAddress ? this.acctAddress :null
       });
-    } catch (error) {
+    } catch (error : any) {
       throw error
     }
   }

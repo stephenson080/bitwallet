@@ -92,7 +92,7 @@ export default function WithdrawPage() {
         content: `You have withdrawn ${state.amount} to your Account`,
         header: 'Operation Success',
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,
@@ -152,7 +152,7 @@ export default function WithdrawPage() {
         ];
         setBal(bal);
       }
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         header: 'Something went wrong',

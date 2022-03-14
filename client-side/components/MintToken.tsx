@@ -48,7 +48,7 @@ export default function MintToken(props : Props) {
         content: `You now have minted ${state.amount} ${props.tokenName}`,
         header: 'Operation Success',
       });
-    } catch (error) {
+    } catch (error : any) {
       setMsg({
         type: 'DANGER',
         content: error.message,

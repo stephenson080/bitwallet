@@ -37,7 +37,7 @@ export function addTransactionToDB(userId: string, hash: string, type : Transact
           transactions: transactions,
         },
       });
-    } catch (error) {
+    } catch (error : any) {
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
         payload: {
@@ -67,7 +67,7 @@ export function getTransactionsFromDB(userId: string, cb : (trxs : any[]) => voi
         },
       });
       cb(transactions)
-    } catch (error) {
+    } catch (error : any) {
       dispatch({
         type: AUTH_ACTIONS.SETMESSAGE,
         payload: {
