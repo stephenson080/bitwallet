@@ -1,15 +1,42 @@
-# Basic Sample Hardhat Project
+# Bitwallet
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+Bitwallet is DApp built on the Etheruem Rinkeby test network, 
 
-Try running some of the following tasks:
+to compile the smart contracts run:
 
 ```shell
-npx hardhat accounts
 npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+```
+
+to run the test scripts, run:
+
+```shell
+
+yarn test
+
+```
+
+to deploy the contracts on local and rinkeby test networks respectively, run:
+
+```shell
+
+// on local network
+yarn dep:local
+
+// on rinkeby network
+yarn dep:rinkeby
+
+```
+
+to start the frontend,  run the following commands
+
+```shell
+
+cd client-side
+yarn add
+
+// then,
+
+yarn dev // to start the front-end
+
 ```
