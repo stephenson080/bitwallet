@@ -66,7 +66,7 @@ describe("Deployment", function () {
                 value: web3.utils.toWei('0.00001', 'ether')
             })
 
-            console.log(freeMint.methods.getBalance(accounts[1]).call(), cryptMint.methods.getBalance(accounts[1]).call(), qMint.methods.getBalance(accounts[1]).call())
+            console.log(await freeMint.methods.getBalance(accounts[1]).call(), await  cryptMint.methods.getBalance(accounts[1]).call(), await qMint.methods.getBalance(accounts[1]).call())
 
         })
 
