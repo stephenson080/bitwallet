@@ -38,8 +38,12 @@ contract Account {
         return address(this).balance;
     }
 
-    function setUserAddress(address newAddress) public checkUserAddress{
-        userAddress = newAddress;
+    function setUserAddress(address newAddress) public returns (bool) {
+        if (msg.sender == userAddress){
+            userAddress = newAddress;
+            return true;
+        }
+        return false;
     }
 
     modifier checkUserAddress(){  

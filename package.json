@@ -11,7 +11,8 @@
     "dep:local": "node scripts/deploy",
     "dep:rinkeby": "npx hardhat run --network rinkeby scripts/deploy.js",
     "test": "npx hardhat test",
-    "comp": "npx harthat compile"
+    "cmp": "npx hardhat compile",
+    "local": "npx hardhat node"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
