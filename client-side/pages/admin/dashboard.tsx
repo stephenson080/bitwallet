@@ -296,7 +296,7 @@ export default function AdminDashboard(props: Props) {
               </h1>
             </div>
 
-            <Table color="blue" fixed singleLine>
+            <Table color="blue" singleLine>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>S/N</Table.HeaderCell>

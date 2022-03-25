@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\UDE VALENTINE\\Documents\\uba ude\\etherum-projects\\bank-app\\contracts\\account.sol": {
-      "lastModificationDate": 1647632727662,
-      "contentHash": "7f0bf34f6677d18814a780cdff8d70d7",
+      "lastModificationDate": 1648204850443,
+      "contentHash": "c38b0d4658d918894b725f5fe453f4b7",
       "sourceName": "contracts/account.sol",
       "solcConfig": {
         "version": "0.8.4",

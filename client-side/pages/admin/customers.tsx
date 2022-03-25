@@ -140,7 +140,7 @@ export default function Customers(props: any) {
         <h1 style={{fontWeight: 'bolder', fontSize: '2rem', marginTop: '75px'}}>
           Customers
         </h1>
-        <Table color="blue" fixed singleLine selectable size = 'large'>
+        <Table color="blue" singleLine selectable size = 'large'>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>S/N</Table.HeaderCell>

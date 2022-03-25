@@ -264,7 +264,7 @@ export default function Transactions(props: any) {
         <h1 style={{fontWeight: 'bolder', fontSize: '2rem', margin: '25px 0'}}>
           Transactions
         </h1>
-        <Table color="blue" fixed singleLine selectable size = 'large' >
+        <Table color="blue" singleLine fixed selectable size = 'large' >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>S/N</Table.HeaderCell>

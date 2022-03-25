@@ -93,10 +93,12 @@ export default function Transactions(props: any) {
       setLoading(true)
       dispatch(
         getTransactionsFromDB(userId, async (trxs) => {
+          console.log(trxs)
           let transact: any[] = [];
           if (trxs.length > 0) {
             for (let trx of trxs) {
               const t = await web3.eth.getTransaction(trx.hash);
+              console.log(t)
               transact.push({
                 ...t,
                 type: getTrxType(trx.type.toString()),
@@ -148,7 +150,7 @@ export default function Transactions(props: any) {
         <Table.Row key={i}>
           <Table.Cell>{++i}</Table.Cell>
           <Table.Cell>{trx.nonce}</Table.Cell>
-          <Table.Cell><p onClick = {() => window.open(`https://rinkeby.etherscan.io/tx/${trx.hash}`)}>{trx.hash}</p></Table.Cell>
+          <Table.Cell><p style={{color: 'blue', fontStyle: 'italic', cursor: 'pointer'}} onClick = {() => window.open(`https://rinkeby.etherscan.io/tx/${trx.hash}`)}>{trx.hash}</p></Table.Cell>
           <Table.Cell>{trx.from}</Table.Cell>
           <Table.Cell>{trx.to}</Table.Cell>
           <Table.Cell>{trx.gas}</Table.Cell>
@@ -178,7 +180,7 @@ export default function Transactions(props: any) {
         <h1 style={{fontWeight: 'bolder', fontSize: '2rem', margin: '25px 0'}}>
           Transactions
         </h1>
-        <Table color="blue" fixed singleLine size = 'large' selectable>
+        <Table color="blue" singleLine fixed size = 'large' selectable>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>S/N</Table.HeaderCell>

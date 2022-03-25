@@ -27,8 +27,12 @@ module.exports = {
     hardhat: {
     },
     rinkeby: {
-      url: process.env.INFURA_NETWORK,
-      accounts: [process.env.ACCOUNTPK1, process.env.ACCOUNTPK2]
+      url: process.env.RINKEBY_NETWORK,
+      accounts: [process.env.ACCOUNTPK1 ,process.env.ACCOUNTPK2,  process.env.ACCOUNTPK3 ]
+    },
+    kovan: {
+      url: process.env.KOVAN_NETWORK,
+      accounts: [process.env.ACCOUNTPK3 ,process.env.ACCOUNTPK2, process.env.ACCOUNTPK1]
     }
   }
 };
