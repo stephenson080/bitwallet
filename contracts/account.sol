@@ -24,8 +24,6 @@ contract Account {
         toAdd.transfer(amount);
     }
     
-
-
     function getAccountDetails() public view checkUserAddress returns(string memory, address, uint, address){
         return (
             username,

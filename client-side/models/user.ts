@@ -1,5 +1,4 @@
 import {getApp} from 'firebase/app';
-import {getAuth, sendPasswordResetEmail} from 'firebase/auth';
 import {
   doc,
   getDocs,

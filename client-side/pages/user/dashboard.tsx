@@ -17,6 +17,8 @@ import DashboardNav, {Balances} from '../../components/DashboardNav';
 import AcctDetails, {CardItemsType} from '../../components/UserAccountDetails';
 import BuyToken from '../../components/BuyToken';
 import SendToken from '../../components/SendToken';
+import {Tokendetail} from '../../components/TokenBalanceCard';
+import DashboardContainer from '../../components/dashboardcontainer'
 
 import web3 from '../../ethereum/web3-config';
 import Acct from '../../ethereum/account';
@@ -78,7 +80,7 @@ export default function Dashboard(props: Props) {
     type: -1,
     showSendToken: false,
   });
-  const [acctDetails, setAcctDetails] = useState<CardItemsType[]>([]);
+  const [acctDetails, setAcctDetails] = useState<Tokendetail[]>([]);
   const [pageLoading, setPageLoading] = useState(false);
   const [bal, setBal] = useState<Balances[]>([]);
   //   const [icon, setIcon] = useState('bars')
@@ -165,28 +167,55 @@ export default function Dashboard(props: Props) {
         const qmbalance = await qmtToken.methods
           .getBalance(user.user_address)
           .call();
-        const acctDetails: CardItemsType[] = [
+        // const acctDetails: CardItemsType[] = [
+        //   {
+        //     header: 'Main Account',
+        //     meta: `${web3.utils.fromWei(summary[2], 'ether')} ether`,
+        //     description: 'Etheruem Account',
+        //   },
+        //   {
+        //     header: 'FreeMintToken',
+        //     meta: `${web3.utils.fromWei(fmtbalance)}`,
+        //     description: 'Free Token',
+        //   },
+        //   {
+        //     header: 'CryptMint Token',
+        //     meta: `${web3.utils.fromWei(crmbalance)}`,
+        //     description: 'CryptMint Token',
+        //   },
+        //   {
+        //     header: 'QMint Token',
+        //     meta: `${web3.utils.fromWei(qmbalance)}`,
+        //     description: 'QMint Token',
+        //   },
+        // ];
+
+        const tokenBalences : Tokendetail[] = [
           {
-            header: 'Main Account',
-            meta: `${web3.utils.fromWei(summary[2], 'ether')} ether`,
+            name: 'Main Account',
+            color: '#0202fabe',
+            bal: `${web3.utils.fromWei(summary[2], 'ether')} ether`,
             description: 'Etheruem Account',
           },
           {
-            header: 'FreeMintToken',
-            meta: `${web3.utils.fromWei(fmtbalance)}`,
-            description: 'Free Token',
+            name: 'Token',
+            color: '#05c705e8',
+            bal: `${web3.utils.fromWei(fmtbalance)} unit(s)`,
+            description: 'Free Mint',
           },
           {
-            header: 'CryptMint Token',
-            meta: `${web3.utils.fromWei(crmbalance)}`,
-            description: 'CryptMint Token',
+            name: 'Token',
+            color: 'orange',
+            bal: `${web3.utils.fromWei(crmbalance)} unit(s)`,
+            description: 'Crypt Mint',
           },
           {
-            header: 'QMint Token',
-            meta: `${web3.utils.fromWei(qmbalance)}`,
-            description: 'QMint Token',
-          },
-        ];
+            name: 'Token',
+            color: 'red',
+            bal: `${web3.utils.fromWei(qmbalance)} unit(s)`,
+            description: 'QMint',
+          }
+        ]
         const bal: Balances[] = [
           {
             key: '0',
@@ -216,7 +245,7 @@ export default function Dashboard(props: Props) {
 
         setPageLoading(false);
         setBal(bal);
-        setAcctDetails(acctDetails);
+        setAcctDetails(tokenBalences);
       }
     } catch (error : any) {
       setMsg({
@@ -301,7 +330,8 @@ export default function Dashboard(props: Props) {
             >
               Your Account
             </h1>
-            {acctDetails.length > 0 && <AcctDetails items={acctDetails} />}
+            {acctDetails.length > 0 && <DashboardContainer items={acctDetails} />}
+            {/* {acctDetails.length > 0 && <AcctDetails items={acctDetails} />} */}
             <h1
               style={{margin: '20px 0', fontWeight: 'bolder', fontSize: '2rem'}}
             >
