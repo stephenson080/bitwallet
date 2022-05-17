@@ -1,10 +1,6 @@
 import {Fragment, useState, useEffect} from 'react';
 import {
   Container,
-  Table,
-  Button,
-  Icon,
-  Message,
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
@@ -14,7 +10,6 @@ import {useRouter} from 'next/router';
 import SidebarComponent from '../../components/Sidebar';
 import Tokens, {TokenType, Token} from '../../components/Token';
 import DashboardNav, {Balances} from '../../components/DashboardNav';
-import AcctDetails, {CardItemsType} from '../../components/UserAccountDetails';
 import BuyToken from '../../components/BuyToken';
 import SendToken from '../../components/SendToken';
 import {Tokendetail} from '../../components/TokenBalanceCard';
@@ -68,9 +63,6 @@ export default function Dashboard(props: Props) {
   const [sidebarVisble, setSidebar] = useState(false);
   const [curAddress, setCurAddress] = useState('');
   const [message, setMsg] = useState<MessageType>();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
   const [tokenState, setTokenState] = useState<TokenState>({
     showModal: false,
     curContractAddress: '',
@@ -167,28 +159,6 @@ export default function Dashboard(props: Props) {
         const qmbalance = await qmtToken.methods
           .getBalance(user.user_address)
           .call();
-        // const acctDetails: CardItemsType[] = [
-        //   {
-        //     header: 'Main Account',
-        //     meta: `${web3.utils.fromWei(summary[2], 'ether')} ether`,
-        //     description: 'Etheruem Account',
-        //   },
-        //   {
-        //     header: 'FreeMintToken',
-        //     meta: `${web3.utils.fromWei(fmtbalance)}`,
-        //     description: 'Free Token',
-        //   },
-        //   {
-        //     header: 'CryptMint Token',
-        //     meta: `${web3.utils.fromWei(crmbalance)}`,
-        //     description: 'CryptMint Token',
-        //   },
-        //   {
-        //     header: 'QMint Token',
-        //     meta: `${web3.utils.fromWei(qmbalance)}`,
-        //     description: 'QMint Token',
-        //   },
-        // ];
 
         const tokenBalences : Tokendetail[] = [
           {
@@ -196,24 +166,28 @@ export default function Dashboard(props: Props) {
             color: '#0202fabe',
             bal: `${web3.utils.fromWei(summary[2], 'ether')} ether`,
             description: 'Etheruem Account',
+            imageUrl: 'ethereum.png'
           },
           {
             name: 'Token',
             color: '#05c705e8',
             bal: `${web3.utils.fromWei(fmtbalance)} unit(s)`,
             description: 'Free Mint',
+            imageUrl: 'fmt.png'
           },
           {
             name: 'Token',
             color: 'orange',
             bal: `${web3.utils.fromWei(crmbalance)} unit(s)`,
             description: 'Crypt Mint',
+            imageUrl: 'crm.png'
           },
           {
             name: 'Token',
             color: 'red',
             bal: `${web3.utils.fromWei(qmbalance)} unit(s)`,
             description: 'QMint',
+            imageUrl: 'qmt.png'
           }
         ]
         const bal: Balances[] = [

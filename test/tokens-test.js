@@ -1,6 +1,4 @@
 const { expect } = require('chai')
-
-// const Token = artifacts.require('Token')
 const Token = require('../artifacts/contracts/Token.sol/Token.json')
 
 

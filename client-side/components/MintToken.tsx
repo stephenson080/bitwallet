@@ -1,7 +1,7 @@
 import { Modal, Icon, Button, Container, Form, Message } from "semantic-ui-react";
-import getToken from "../ethereum/token";
 import { useState } from "react";
 
+import getToken from "../ethereum/token";
 import {MessageType} from '../store/types';
 
 type Props = {

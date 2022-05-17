@@ -21,7 +21,7 @@ export default function Customers(props: any) {
   const [sidebarVisibility, setVisibility] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [curAddress, setCurAddress] = useState('');
-  const [message, setMsg] = useState<MessageType>();
+  // const [message, setMsg] = useState<MessageType>();
   const [pageLoading, setPageLoading] = useState(false);
   const user = useSelector<Store, User>((state) => state.auth.user!);
   const dispatch = useDispatch();

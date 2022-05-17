@@ -79,7 +79,6 @@ export default function AdminDashboard(props: Props) {
   });
   const [pendingCustomers, setPendCustomers] = useState<Customer[]>([]);
   const [pageLoading, setPageLoading] = useState(false);
-  //   const [icon, setIcon] = useState('bars')
 
   const dispatch = useDispatch();
 

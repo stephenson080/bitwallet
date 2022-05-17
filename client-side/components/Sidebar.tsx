@@ -3,15 +3,13 @@ import {
   Sidebar,
   Menu,
   Icon,
-  Header,
   Image,
-  Segment,
 } from 'semantic-ui-react';
-import {useState, Fragment} from 'react';
-import User from '../models/user';
-import {useRouter} from 'next/router';
-import {Role} from '../store/types';
 import Link from 'next/link';
+
+import User from '../models/user';
+import {Role} from '../store/types';
+
 
 type Props = {
   visible: boolean;

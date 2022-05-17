@@ -2,7 +2,7 @@ import {Modal, Message, Form, Button, Container, Icon} from 'semantic-ui-react';
 import {useState, useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 
-import {signup, forgotPass} from '../store/actions/auth_action';
+import {forgotPass} from '../store/actions/auth_action';
 import {MessageType} from '../store/types';
 
 

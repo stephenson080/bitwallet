@@ -11,7 +11,8 @@
 
 # next.js
 /client-side/.next/
-/clint-side/.env
+/clint-side/.env.local
+/client-side/yarn.lock
 /out/
 
 # production

@@ -31,7 +31,7 @@ export default function Transactions(props: any) {
   const [sidebarVisibility, setVisibility] = useState(false);
   const [loading, setLoading] = useState(false)
   const [curAddress, setCurAddress] = useState('');
-  const [message, setMsg] = useState<MessageType>();
+  // const [message, setMsg] = useState<MessageType>();
   const [trxs, setTrxs] = useState<any[]>([]);
   const [pageLoading, setPageLoading] = useState(false);
   const user = useSelector<Store, User>((state) => state.auth.user!);

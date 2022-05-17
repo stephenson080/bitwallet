@@ -11,6 +11,7 @@
     "dep:local": "node scripts/deploy",
     "dep:rinkeby": "npx hardhat run --network rinkeby scripts/deploy.js",
     "dep:kovan": "npx hardhat run --network kovan scripts/deploy.js",
+    "dep:bsc-testnet": "npx hardhat run --network testnet scripts/deploy.js",
     "test": "npx hardhat test",
     "cmp": "npx hardhat compile",
     "local": "npx hardhat node"

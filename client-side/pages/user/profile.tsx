@@ -1,6 +1,14 @@
 import Head from 'next/head';
 import {useState, Fragment, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {
+  Form,
+  Message,
+  Button,
+  Image,
+  Dimmer,
+  Loader,
+} from 'semantic-ui-react';
 
 import SidebarComponent from '../../components/Sidebar';
 import DashboardNav, {Balances} from '../../components/DashboardNav';
@@ -15,15 +23,7 @@ import User from '../../models/user';
 import {useRouter} from 'next/router';
 import {MessageType, Role} from '../../store/types';
 
-import {
-  Form,
-  Message,
-  Button,
-  Icon,
-  Image,
-  Dimmer,
-  Loader,
-} from 'semantic-ui-react';
+
 import Acct from '../../ethereum/account';
 import web3 from '../../ethereum/web3-config';
 import {addTransactionToDB} from '../../store/actions/user-actions';

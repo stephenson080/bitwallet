@@ -5,7 +5,6 @@ import {
   Form,
   Message,
   Button,
-  Icon,
   Image,
   Dimmer,
   Loader,

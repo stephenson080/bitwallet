@@ -20,6 +20,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
+const accounts = [process.env.ACCOUNTPK1 ,process.env.ACCOUNTPK2,  process.env.ACCOUNTPK3 ]
 module.exports = {
   solidity: "0.8.4",
   defaultNetwork: "hardhat",
@@ -28,11 +29,17 @@ module.exports = {
     },
     rinkeby: {
       url: process.env.RINKEBY_NETWORK,
-      accounts: [process.env.ACCOUNTPK1 ,process.env.ACCOUNTPK2,  process.env.ACCOUNTPK3 ]
+      accounts: accounts
     },
     kovan: {
       url: process.env.KOVAN_NETWORK,
-      accounts: [process.env.ACCOUNTPK3 ,process.env.ACCOUNTPK2, process.env.ACCOUNTPK1]
+      accounts: accounts
+    },
+    testnet: {
+      url: "https://speedy-nodes-nyc.moralis.io/2c6e94da4d4dabdf417f05a7/bsc/testnet",
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: {mnemonic: process.env.MNEMONIC_PHRASE}
     }
   }
 };
