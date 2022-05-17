@@ -1,22 +1,23 @@
-import {useState, useEffect} from 'react';
-import {useRouter} from 'next/router';
-import {useSelector, useDispatch} from 'react-redux';
-import {Container, Table, Dimmer, Loader} from 'semantic-ui-react';
-import Head from 'next/head';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useSelector, useDispatch } from "react-redux";
+import { Container, Table, Dimmer, Loader } from "semantic-ui-react";
+import Head from "next/head";
 
-import DashboardNav, {Balances} from '../../components/DashboardNav';
-import SidebarComponent from '../../components/Sidebar';
+import DashboardNav, { Balances } from "../../components/DashboardNav";
+import SidebarComponent from "../../components/Sidebar";
 
-import web3 from '../../ethereum/web3-config';
-import Acct from '../../ethereum/account';
-import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
+import web3 from "../../ethereum/web3-config";
+import Acct from "../../ethereum/account";
+import { getMyAccountBalance } from "../../ethereum/xend.finance";
+import { getFmtToken, getCRMToken, getQmToken } from "../../ethereum/token";
 
-import {MessageType, Role} from '../../store/types';
-import {logout, autoLogin} from '../../store/actions/auth_action';
-import {getTransactionsFromDB} from '../../store/actions/user-actions';
-import {Store} from '../_app';
-import User from '../../models/user';
-import Footer from '../../components/Footer';
+import { MessageType, Role } from "../../store/types";
+import { logout, autoLogin } from "../../store/actions/auth_action";
+import { getTransactionsFromDB } from "../../store/actions/user-actions";
+import { Store } from "../_app";
+import User from "../../models/user";
+import Footer from "../../components/Footer";
 
 export enum TransactionType {
   MINT_TOKEN,
@@ -31,8 +32,8 @@ export enum TransactionType {
 
 export default function Transactions(props: any) {
   const [sidebarVisibility, setVisibility] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [curAddress, setCurAddress] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [curAddress, setCurAddress] = useState("");
   const [message, setMsg] = useState<MessageType>();
   const [trxs, setTrxs] = useState<any[]>([]);
   const [pageLoading, setPageLoading] = useState(false);
@@ -47,7 +48,7 @@ export default function Transactions(props: any) {
     if (user) {
       return;
     }
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (userId) {
       setPageLoading(true);
       dispatch(
@@ -55,47 +56,47 @@ export default function Transactions(props: any) {
           setPageLoading(false);
           if (us) {
             if (us.role === Role.Admin) {
-              router.replace('/admin/dashboard');
+              router.replace("/admin/dashboard");
             }
           } else {
-            router.replace('/auth/login');
+            router.replace("/auth/login");
           }
         })
       );
     } else {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
     }
   }, []);
 
   function getTrxType(type: string) {
     switch (type) {
-      case '0':
-        return 'Mint Token';
-      case '1':
-        return 'Buy Token';
-      case '2':
-        return 'Send Token';
-      case '3':
-        return 'Deposit';
-      case '4':
-        return 'Withdraw';
-      case '5':
-        return 'Transfer';
-      case '6':
-        return 'Create Accounts';
-      case '7':
-        return 'Create Account';
-      case '8':
-        return 'Change User Address'
+      case "0":
+        return "Mint Token";
+      case "1":
+        return "Buy Token";
+      case "2":
+        return "Send Token";
+      case "3":
+        return "Deposit";
+      case "4":
+        return "Withdraw";
+      case "5":
+        return "Transfer";
+      case "6":
+        return "Create Accounts";
+      case "7":
+        return "Create Account";
+      case "8":
+        return "Change User Address";
       default:
-        return ''
+        return "";
     }
   }
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (userId) {
-      setLoading(true)
+      setLoading(true);
       dispatch(
         getTransactionsFromDB(userId, async (trxs) => {
           let transact: any[] = [];
@@ -109,7 +110,7 @@ export default function Transactions(props: any) {
             }
             setTrxs(transact);
           }
-          setLoading(false)
+          setLoading(false);
         })
       );
     }
@@ -124,17 +125,17 @@ export default function Transactions(props: any) {
     dispatch(
       logout((m) => {
         setPageLoading(false);
-        if (m === 'SUCCESS') {
+        if (m === "SUCCESS") {
           localStorage.clear();
-          router.replace('/auth/login');
+          router.replace("/auth/login");
         }
       })
     );
   }
 
   useEffect(() => {
-    getAcctDetails(user)
-  }, [user])
+    getAcctDetails(user);
+  }, [user]);
 
   async function getAcctDetails(user: User) {
     try {
@@ -159,56 +160,64 @@ export default function Transactions(props: any) {
           .getBalance(user.user_address)
           .call();
 
+        const busdBal = await getMyAccountBalance(undefined, setLoading);
+
         const bal: Balances[] = [
           {
-            key: '0',
-            image: {avatar: true, src: '/images/ethereum.png'},
-            values: `${web3.utils.fromWei(summary[2], 'ether')}`,
-            text: `Main Account: ${web3.utils.fromWei(summary[2], 'ether')}`,
+            key: "0",
+            image: { avatar: true, src: "/images/ethereum.png" },
+            values: `${web3.utils.fromWei(summary[2], "ether")}`,
+            text: `Main Account: ${web3.utils.fromWei(summary[2], "ether")}`,
           },
           {
-            key: '1',
-            image: {avatar: true, src: '/images/fmt.png'},
+            key: "1",
+            image: { avatar: true, src: "/images/fmt.png" },
             values: `${web3.utils.fromWei(fmtbalance)}`,
             text: `FreeMint Token: ${web3.utils.fromWei(fmtbalance)}`,
           },
           {
-            key: '2',
-            image: {avatar: true, src: '/images/crm.png'},
+            key: "2",
+            image: { avatar: true, src: "/images/crm.png" },
             values: `${web3.utils.fromWei(crmbalance)}`,
             text: `CryptMint Token: ${web3.utils.fromWei(crmbalance)}`,
           },
           {
-            key: '3',
-            image: {avatar: true, src: '/images/qmt.png'},
+            key: "3",
+            image: { avatar: true, src: "/images/qmt.png" },
             values: `${web3.utils.fromWei(qmbalance)}`,
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
+          },
+          {
+            key: "4",
+            image: { avatar: true, src: "/images/qmt.png" },
+            values: `${busdBal}`,
+            text: `BUSD: ${busdBal}`,
           },
         ];
 
         setBal(bal);
       }
-    } catch (error : any) {
+    } catch (error: any) {
       setMsg({
-        type: 'DANGER',
-        header: 'Something went wrong',
+        type: "DANGER",
+        header: "Something went wrong",
         content: error.message,
       });
     }
   }
 
   function rendertransactions() {
-    if (loading){
+    if (loading) {
       return (
-        <Table.Row >
-          <Table.Cell >Getting your Transactions... Please wait!</Table.Cell>
+        <Table.Row>
+          <Table.Cell>Getting your Transactions... Please wait!</Table.Cell>
         </Table.Row>
       );
     }
     if (trxs.length === 0) {
       return (
-        <Table.Row >
-          <Table.Cell >No Transaction to show</Table.Cell>
+        <Table.Row>
+          <Table.Cell>No Transaction to show</Table.Cell>
         </Table.Row>
       );
     }
@@ -219,9 +228,10 @@ export default function Transactions(props: any) {
           <Table.Cell>{++i}</Table.Cell>
           <Table.Cell>{trx.nonce}</Table.Cell>
           <Table.Cell>
-        <p style = {{cursor: 'pointer', color: 'blue', }}
+            <p
+              style={{ cursor: "pointer", color: "blue" }}
               onClick={() =>
-                window.open(`https://rinkeby.etherscan.io/tx/${trx.hash}`)
+                window.open(`https://testnet.bscscan.com/tx/${trx.hash}`)
               }
             >
               {trx.hash}
@@ -231,15 +241,15 @@ export default function Transactions(props: any) {
           <Table.Cell>{trx.to}</Table.Cell>
           <Table.Cell>{trx.gas}</Table.Cell>
           <Table.Cell>
-            {web3.utils.fromWei(trx.value, 'ether')} ether
+            {web3.utils.fromWei(trx.value, "ether")} ether
           </Table.Cell>
           <Table.Cell>{trx.type}</Table.Cell>
         </Table.Row>
       ))
     );
   }
-  function openProfile(){
-    router.replace('/user/profile')
+  function openProfile() {
+    router.replace("/user/profile");
   }
   return (
     <SidebarComponent user={user} visible={sidebarVisibility}>
@@ -252,7 +262,7 @@ export default function Transactions(props: any) {
         </Loader>
       </Dimmer>
       <DashboardNav
-      openProfile={openProfile}
+        openProfile={openProfile}
         bal={bal}
         user={user}
         logout={handleLogout}
@@ -260,11 +270,13 @@ export default function Transactions(props: any) {
         setSidebar={() => setVisibility((state) => !state)}
         sideBarVisibility={sidebarVisibility}
       />
-      <Container style={{margin: '110px 0'}}>
-        <h1 style={{fontWeight: 'bolder', fontSize: '2rem', margin: '25px 0'}}>
+      <Container style={{ margin: "110px 0" }}>
+        <h1
+          style={{ fontWeight: "bolder", fontSize: "2rem", margin: "25px 0" }}
+        >
           Transactions
         </h1>
-        <Table color="blue" singleLine fixed selectable size = 'large' >
+        <Table color="blue" singleLine fixed selectable size="large">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>S/N</Table.HeaderCell>
@@ -280,7 +292,7 @@ export default function Transactions(props: any) {
           <Table.Body>{rendertransactions()}</Table.Body>
         </Table>
       </Container>
-      <Footer show = {false} />
+      <Footer show={false} />
     </SidebarComponent>
   );
 }

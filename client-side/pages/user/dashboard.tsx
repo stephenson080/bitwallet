@@ -25,6 +25,7 @@ import Acct from '../../ethereum/account';
 import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
 import getTokens from '../../ethereum/tokens';
 import {MessageType, Role} from '../../store/types';
+import { getMyAccountBalance } from "../../ethereum/xend.finance";
 
 import {Store} from '../_app';
 import User from '../../models/user';
@@ -216,6 +217,8 @@ export default function Dashboard(props: Props) {
             description: 'QMint',
           }
         ]
+
+        const busdBal = await getMyAccountBalance(undefined, setLoading);
         const bal: Balances[] = [
           {
             key: '0',
@@ -241,6 +244,12 @@ export default function Dashboard(props: Props) {
             values: `${web3.utils.fromWei(qmbalance)}`,
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
           },
+          {
+            key: '4',
+            image: {avatar: true, src: '/images/qmt.png'},
+            values: `${busdBal}`,
+            text: `BUSD: ${busdBal}`,
+          }
         ];
 
         setPageLoading(false);

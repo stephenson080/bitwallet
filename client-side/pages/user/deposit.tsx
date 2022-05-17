@@ -1,15 +1,15 @@
-import Head from 'next/head';
-import {useState, Fragment, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import Head from "next/head";
+import { useState, Fragment, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import SidebarComponent from '../../components/Sidebar';
-import DashboardNav, {Balances} from '../../components/DashboardNav';
-import {logout, autoLogin} from '../../store/actions/auth_action';
+import SidebarComponent from "../../components/Sidebar";
+import DashboardNav, { Balances } from "../../components/DashboardNav";
+import { logout, autoLogin } from "../../store/actions/auth_action";
 
-import {Store} from '../_app';
-import User from '../../models/user';
-import {useRouter} from 'next/router';
-import {MessageType, Role} from '../../store/types';
+import { Store } from "../_app";
+import User from "../../models/user";
+import { useRouter } from "next/router";
+import { MessageType, Role } from "../../store/types";
 
 import {
   Form,
@@ -19,13 +19,14 @@ import {
   Image,
   Dimmer,
   Loader,
-} from 'semantic-ui-react';
-import Acct from '../../ethereum/account';
-import web3 from '../../ethereum/web3-config';
-import {addTransactionToDB} from '../../store/actions/user-actions';
-import {TransactionType} from '../admin/transactions';
-import {getCRMToken, getFmtToken, getQmToken} from '../../ethereum/token';
-import Footer from '../../components/Footer';
+} from "semantic-ui-react";
+import Acct from "../../ethereum/account";
+import web3 from "../../ethereum/web3-config";
+import { getMyAccountBalance } from "../../ethereum/xend.finance";
+import { addTransactionToDB } from "../../store/actions/user-actions";
+import { TransactionType } from "../admin/transactions";
+import { getCRMToken, getFmtToken, getQmToken } from "../../ethereum/token";
+import Footer from "../../components/Footer";
 
 interface DepositState {
   amount: string;
@@ -38,7 +39,7 @@ export default function DepositPage() {
   const [success, setSuccess] = useState(false);
   const [message, setMsg] = useState<MessageType>();
   const [state, setState] = useState<DepositState>({
-    amount: '',
+    amount: "",
   });
   const [bal, setBal] = useState<Balances[]>([]);
 
@@ -49,9 +50,9 @@ export default function DepositPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (user){
-      return
+    const userId = localStorage.getItem("userId");
+    if (user) {
+      return;
     }
     if (userId) {
       setPageLoading(true);
@@ -60,21 +61,21 @@ export default function DepositPage() {
           setPageLoading(false);
           if (us) {
             if (us.role === Role.Admin) {
-              router.replace('/admin/dashboard');
+              router.replace("/admin/dashboard");
             }
           } else {
-            router.replace('/auth/login');
+            router.replace("/auth/login");
           }
         })
       );
     } else {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
     }
   }, []);
 
   useEffect(() => {
-    getAcctDetails(user)
-  }, [user])
+    getAcctDetails(user);
+  }, [user]);
 
   async function getAcctDetails(user: User) {
     try {
@@ -99,38 +100,46 @@ export default function DepositPage() {
           .getBalance(user.user_address)
           .call();
 
+        const busdBal = await getMyAccountBalance(undefined, setLoading);
+
         const bal: Balances[] = [
           {
-            key: '0',
-            image: {avatar: true, src: '/images/ethereum.png'},
-            values: `${web3.utils.fromWei(summary[2], 'ether')}`,
-            text: `Main Account: ${web3.utils.fromWei(summary[2], 'ether')}`,
+            key: "0",
+            image: { avatar: true, src: "/images/ethereum.png" },
+            values: `${web3.utils.fromWei(summary[2], "ether")}`,
+            text: `Main Account: ${web3.utils.fromWei(summary[2], "ether")}`,
           },
           {
-            key: '1',
-            image: {avatar: true, src: '/images/fmt.png'},
+            key: "1",
+            image: { avatar: true, src: "/images/fmt.png" },
             values: `${web3.utils.fromWei(fmtbalance)}`,
             text: `FreeMint Token: ${web3.utils.fromWei(fmtbalance)}`,
           },
           {
-            key: '2',
-            image: {avatar: true, src: '/images/crm.png'},
+            key: "2",
+            image: { avatar: true, src: "/images/crm.png" },
             values: `${web3.utils.fromWei(crmbalance)}`,
             text: `CryptMint Token: ${web3.utils.fromWei(crmbalance)}`,
           },
           {
-            key: '3',
-            image: {avatar: true, src: '/images/qmt.png'},
+            key: "3",
+            image: { avatar: true, src: "/images/qmt.png" },
             values: `${web3.utils.fromWei(qmbalance)}`,
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
+          },
+          {
+            key: "4",
+            image: { avatar: true, src: "/images/qmt.png" },
+            values: `${busdBal}`,
+            text: `BUSD: ${busdBal}`,
           },
         ];
         setBal(bal);
       }
-    } catch (error : any) {
+    } catch (error: any) {
       setMsg({
-        type: 'DANGER',
-        header: 'Something went wrong',
+        type: "DANGER",
+        header: "Something went wrong",
         content: error.message,
       });
     }
@@ -147,22 +156,21 @@ export default function DepositPage() {
           from: user.user_address,
           value: web3.utils.toWei(state.amount.toString()),
         })
-        .on('transactionHash', (hash: string) => {
+        .on("transactionHash", (hash: string) => {
           dispatch(addTransactionToDB(user.uid, hash, TransactionType.DEPOSIT));
         });
       setLoading(false);
       setSuccess(true);
       setMsg({
-        type: 'SUCCESS',
+        type: "SUCCESS",
         content: `You have deposited ${state.amount} to your Account`,
-        header: 'Operation Success',
+        header: "Operation Success",
       });
-      
-    } catch (error : any) {
+    } catch (error: any) {
       setMsg({
-        type: 'DANGER',
+        type: "DANGER",
         content: `${error.message}`,
-        header: 'Something went wrong',
+        header: "Something went wrong",
       });
     }
   }
@@ -172,15 +180,15 @@ export default function DepositPage() {
     dispatch(
       logout((m) => {
         setPageLoading(false);
-        if (m === 'SUCCESS') {
+        if (m === "SUCCESS") {
           localStorage.clear();
-          router.replace('/auth/login');
+          router.replace("/auth/login");
         }
       })
     );
   }
-  function openProfile(){
-    router.replace('/user/profile')
+  function openProfile() {
+    router.replace("/user/profile");
   }
   return (
     <Fragment>
@@ -204,25 +212,25 @@ export default function DepositPage() {
         />
         <div
           style={{
-            backgroundColor: 'white',
-            padding: '35px',
-            borderTopRightRadius: '25px',
-            borderBottomLeftRadius: '25px',
-            margin: '45px auto',
-            width: '80%',
-            maxWidth: '45rem',
+            backgroundColor: "white",
+            padding: "35px",
+            borderTopRightRadius: "25px",
+            borderBottomLeftRadius: "25px",
+            margin: "45px auto",
+            width: "80%",
+            maxWidth: "45rem",
           }}
         >
           <Image centered src="/images/deposit.png" width={100} height={100} />
           <Form
-            style={{marginTop: '30px'}}
+            style={{ marginTop: "30px" }}
             error={!!message?.content}
             size="large"
           >
             <Form.Input
               type="text"
               required
-              style={{width: '100%', margin: '18px 0'}}
+              style={{ width: "100%", margin: "18px 0" }}
               label="Amount"
               size="big"
               placeholder="enter amount you want to deposit"
@@ -237,10 +245,10 @@ export default function DepositPage() {
 
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
               }}
             >
               <Button onClick={deposit} loading={loading} primary>
@@ -250,14 +258,14 @@ export default function DepositPage() {
 
             <Message
               success={success}
-              style={{width: '70%'}}
+              style={{ width: "70%" }}
               error
               content={message?.content}
               header={message?.header}
             />
           </Form>
         </div>
-        <Footer show = {false} />
+        <Footer show={false} />
       </SidebarComponent>
     </Fragment>
   );

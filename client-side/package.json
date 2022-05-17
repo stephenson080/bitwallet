@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@xend-finance/web-sdk": "^0.2.2",
     "firebase": "^9.6.7",
     "next": "12.1.0",
     "react": "17.0.2",

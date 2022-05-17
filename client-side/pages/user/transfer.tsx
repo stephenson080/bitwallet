@@ -1,6 +1,6 @@
-import {useSelector, useDispatch} from 'react-redux';
-import {useState, Fragment, useEffect} from 'react';
-import Head from 'next/head';
+import { useSelector, useDispatch } from "react-redux";
+import { useState, Fragment, useEffect } from "react";
+import Head from "next/head";
 import {
   Form,
   Message,
@@ -9,23 +9,24 @@ import {
   Image,
   Dimmer,
   Loader,
-} from 'semantic-ui-react';
-import {useRouter} from 'next/router';
+} from "semantic-ui-react";
+import { useRouter } from "next/router";
 
-import SidebarComponent from '../../components/Sidebar';
-import DashboardNav, {Balances} from '../../components/DashboardNav';
+import SidebarComponent from "../../components/Sidebar";
+import DashboardNav, { Balances } from "../../components/DashboardNav";
 
-import Acct from '../../ethereum/account';
-import web3 from '../../ethereum/web3-config';
-import {getFmtToken, getCRMToken, getQmToken} from '../../ethereum/token';
+import Acct from "../../ethereum/account";
+import web3 from "../../ethereum/web3-config";
+import { getMyAccountBalance } from "../../ethereum/xend.finance";
+import { getFmtToken, getCRMToken, getQmToken } from "../../ethereum/token";
 
-import {logout, autoLogin} from '../../store/actions/auth_action';
-import {Store} from '../_app';
-import User from '../../models/user';
-import {MessageType, Role} from '../../store/types';
-import {addTransactionToDB} from '../../store/actions/user-actions';
-import {TransactionType} from '../admin/transactions';
-import Footer from '../../components/Footer';
+import { logout, autoLogin } from "../../store/actions/auth_action";
+import { Store } from "../_app";
+import User from "../../models/user";
+import { MessageType, Role } from "../../store/types";
+import { addTransactionToDB } from "../../store/actions/user-actions";
+import { TransactionType } from "../admin/transactions";
+import Footer from "../../components/Footer";
 
 interface TransferState {
   amount: string;
@@ -39,8 +40,8 @@ export default function WithdrawPage() {
   const [success, setSuccess] = useState(false);
   const [message, setMsg] = useState<MessageType>();
   const [state, setState] = useState<TransferState>({
-    amount: '',
-    receiver: '',
+    amount: "",
+    receiver: "",
   });
   const [bal, setBal] = useState<Balances[]>([]);
 
@@ -51,9 +52,9 @@ export default function WithdrawPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (user){
-      return
+    const userId = localStorage.getItem("userId");
+    if (user) {
+      return;
     }
     if (userId) {
       setPageLoading(true);
@@ -62,21 +63,21 @@ export default function WithdrawPage() {
           setPageLoading(false);
           if (us) {
             if (us.role === Role.Admin) {
-              router.replace('/admin/dashboard');
+              router.replace("/admin/dashboard");
             }
           } else {
-            router.replace('/auth/login');
+            router.replace("/auth/login");
           }
         })
       );
     } else {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
     }
   }, []);
 
   useEffect(() => {
-    getAcctDetails(user)
-  }, [user])
+    getAcctDetails(user);
+  }, [user]);
 
   async function transfer() {
     try {
@@ -91,7 +92,7 @@ export default function WithdrawPage() {
         .send({
           from: user.user_address,
         })
-        .on('transactionHash', (hash: string) => {
+        .on("transactionHash", (hash: string) => {
           dispatch(
             addTransactionToDB(user.uid, hash, TransactionType.TRANSFER)
           );
@@ -100,15 +101,15 @@ export default function WithdrawPage() {
       setLoading(false);
       setSuccess(true);
       setMsg({
-        type: 'SUCCESS',
+        type: "SUCCESS",
         content: `You have transferred ${state.amount} to ${state.receiver}`,
-        header: 'Operation Success',
+        header: "Operation Success",
       });
-    } catch (error : any) {
+    } catch (error: any) {
       setMsg({
-        type: 'DANGER',
+        type: "DANGER",
         content: error.message,
-        header: 'Something went wrong',
+        header: "Something went wrong",
       });
     }
   }
@@ -118,9 +119,9 @@ export default function WithdrawPage() {
     dispatch(
       logout((m) => {
         setPageLoading(false);
-        if (m === 'SUCCESS') {
+        if (m === "SUCCESS") {
           localStorage.clear();
-          router.replace('/auth/login');
+          router.replace("/auth/login");
         }
       })
     );
@@ -149,45 +150,53 @@ export default function WithdrawPage() {
           .getBalance(user.user_address)
           .call();
 
+        const busdBal = await getMyAccountBalance(undefined, setLoading);
+
         const bal: Balances[] = [
           {
-            key: '0',
-            image: {avatar: true, src: '/images/ethereum.png'},
-            values: `${web3.utils.fromWei(summary[2], 'ether')}`,
-            text: `Main Account: ${web3.utils.fromWei(summary[2], 'ether')}`,
+            key: "0",
+            image: { avatar: true, src: "/images/ethereum.png" },
+            values: `${web3.utils.fromWei(summary[2], "ether")}`,
+            text: `Main Account: ${web3.utils.fromWei(summary[2], "ether")}`,
           },
           {
-            key: '1',
-            image: {avatar: true, src: '/images/fmt.png'},
+            key: "1",
+            image: { avatar: true, src: "/images/fmt.png" },
             values: `${web3.utils.fromWei(fmtbalance)}`,
             text: `FreeMint Token: ${web3.utils.fromWei(fmtbalance)}`,
           },
           {
-            key: '2',
-            image: {avatar: true, src: '/images/crm.png'},
+            key: "2",
+            image: { avatar: true, src: "/images/crm.png" },
             values: `${web3.utils.fromWei(crmbalance)}`,
             text: `CryptMint Token: ${web3.utils.fromWei(crmbalance)}`,
           },
           {
-            key: '3',
-            image: {avatar: true, src: '/images/qmt.png'},
+            key: "3",
+            image: { avatar: true, src: "/images/qmt.png" },
             values: `${web3.utils.fromWei(qmbalance)}`,
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
+          },
+          {
+            key: "4",
+            image: { avatar: true, src: "/images/qmt.png" },
+            values: `${busdBal}`,
+            text: `BUSD: ${busdBal}`,
           },
         ];
 
         setBal(bal);
       }
-    } catch (error : any) {
+    } catch (error: any) {
       setMsg({
-        type: 'DANGER',
-        header: 'Something went wrong',
+        type: "DANGER",
+        header: "Something went wrong",
         content: error.message,
       });
     }
   }
-  function openProfile(){
-    router.replace('/user/profile')
+  function openProfile() {
+    router.replace("/user/profile");
   }
   return (
     <Fragment>
@@ -201,7 +210,7 @@ export default function WithdrawPage() {
       </Dimmer>
       <SidebarComponent user={user} visible={sidebarVisble}>
         <DashboardNav
-        openProfile={openProfile}
+          openProfile={openProfile}
           bal={bal}
           page="Transfer Ether"
           setSidebar={() => setSidebar((state) => !state)}
@@ -211,25 +220,25 @@ export default function WithdrawPage() {
         />
         <div
           style={{
-            backgroundColor: 'white',
-            padding: '35px',
-            borderTopRightRadius: '25px',
-            borderBottomLeftRadius: '25px',
-            margin: '45px auto',
-            width: '80%',
-            maxWidth: '45rem',
+            backgroundColor: "white",
+            padding: "35px",
+            borderTopRightRadius: "25px",
+            borderBottomLeftRadius: "25px",
+            margin: "45px auto",
+            width: "80%",
+            maxWidth: "45rem",
           }}
         >
           <Image centered src="/images/with.png" width={100} height={100} />
           <Form
-            style={{marginTop: '30px'}}
+            style={{ marginTop: "30px" }}
             error={!!message?.content}
             size="large"
           >
             <Form.Input
               type="text"
               required
-              style={{width: '100%', margin: '18px 0'}}
+              style={{ width: "100%", margin: "18px 0" }}
               label="Receiver"
               size="big"
               placeholder="enter user address you want to send to"
@@ -244,7 +253,7 @@ export default function WithdrawPage() {
             <Form.Input
               type="text"
               required
-              style={{width: '100%', margin: '18px 0'}}
+              style={{ width: "100%", margin: "18px 0" }}
               label="Amount"
               size="big"
               placeholder="enter amount you want to send"
@@ -259,10 +268,10 @@ export default function WithdrawPage() {
 
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
               }}
             >
               <Button onClick={transfer} loading={loading} primary>
@@ -272,14 +281,14 @@ export default function WithdrawPage() {
 
             <Message
               success={success}
-              style={{width: '70%'}}
+              style={{ width: "70%" }}
               error
               content={message?.content}
               header={message?.header}
             />
           </Form>
         </div>
-        <Footer show = {false} />
+        <Footer show={false} />
       </SidebarComponent>
     </Fragment>
   );

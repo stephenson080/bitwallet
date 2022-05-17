@@ -1,20 +1,6 @@
 import Head from "next/head";
 import { useState, Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import SidebarComponent from "../../components/Sidebar";
-import DashboardNav, { Balances } from "../../components/DashboardNav";
-import {
-  logout,
-  autoLogin,
-  setuserAddress,
-} from "../../store/actions/auth_action";
-
-import { Store } from "../_app";
-import User from "../../models/user";
-import { useRouter } from "next/router";
-import { MessageType, Role } from "../../store/types";
-
 import {
   Form,
   Message,
@@ -24,21 +10,26 @@ import {
   Dimmer,
   Loader,
 } from "semantic-ui-react";
+
+import SidebarComponent from "../../components/Sidebar";
+import DashboardNav, { Balances } from "../../components/DashboardNav";
+import Footer from "../../components/Footer";
+import { logout, autoLogin } from "../../store/actions/auth_action";
+
+import { Store } from "../_app";
+import User from "../../models/user";
+import { useRouter } from "next/router";
+import { MessageType, Role } from "../../store/types";
+import { sendFunds } from "../../ethereum/sendBUSD";
+import { getMyAccountBalance } from "../../ethereum/xend.finance";
+
 import Acct from "../../ethereum/account";
 import web3 from "../../ethereum/web3-config";
-import { getMyAccountBalance } from "../../ethereum/xend.finance";
 import { addTransactionToDB } from "../../store/actions/user-actions";
 import { TransactionType } from "../admin/transactions";
 import { getCRMToken, getFmtToken, getQmToken } from "../../ethereum/token";
-import Footer from "../../components/Footer";
 
-interface ProfileState {
-  user_address: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-
-export default function ProfilePage() {
+export default function GetBusdpage() {
   const [sidebarVisble, setSidebar] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,11 +38,7 @@ export default function ProfilePage() {
 
   const user = useSelector<Store, User>((state) => state.auth.user!);
 
-  const [state, setState] = useState<ProfileState>({
-    user_address: user ? user.user_address : "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+  const [amount, setAmount] = useState("");
   const [bal, setBal] = useState<Balances[]>([]);
 
   const msg = useSelector<Store, MessageType>((state) => state.auth.message);
@@ -59,17 +46,6 @@ export default function ProfilePage() {
   const router = useRouter();
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (msg.type === "SUCCESS") {
-      setSuccess(true);
-    }
-    setMsg({
-      type: msg.type,
-      content: msg.content,
-      header: msg.header,
-    });
-  }, [msg]);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -171,41 +147,33 @@ export default function ProfilePage() {
     }
   }
 
-  async function update() {
+  async function getBusd() {
     try {
-      const accounts = await web3.eth.getAccounts();
       setLoading(true);
       setSuccess(false);
       setMsg(undefined);
-      await Acct(user.acctAddress)
-        .methods.setUserAddress(state.user_address)
-        .send({
-          from: accounts[0],
-        })
-        .on("transactionHash", (hash: string) => {
-          dispatch(
-            addTransactionToDB(
-              user.uid,
-              hash,
-              TransactionType.CHANGE_USERADDRESS
-            )
-          );
-        });
-      const updatedUser = new User(
-        user.uid,
-        user.email,
-        user.emailVerified,
-        state.user_address,
-        user.username,
-        user.role,
-        user.acctAddress
-      );
-      dispatch(
-        setuserAddress(updatedUser, (m) => {
-          setLoading(false);
-        })
-      );
+      console.log('waiting...')
+      await sendFunds(amount, async function () {
+        try {
+          
+          const busdBal = await getMyAccountBalance(undefined, setLoading);
+          console.log('done...')
+          setSuccess(true);
+          let updatedbusdBal = { ...bal[4] };
+          updatedbusdBal.values = busdBal!;
+          updatedbusdBal.text = `BUSD: ${busdBal}`;
+          setBal([...bal.slice(0, 4), updatedbusdBal]);
+          setMsg({
+            type: "SUCCESS",
+            header: "Alert",
+            content: `You now have ${busdBal} BUSD`,
+          });
+        } catch (e) {
+          throw e
+        }
+      });
     } catch (error: any) {
+      console.log(error)
       setLoading(false);
       setMsg({
         type: "DANGER",
@@ -233,7 +201,7 @@ export default function ProfilePage() {
   return (
     <Fragment>
       <Head>
-        <title>Profile</title>
+        <title>Get BUSD</title>
       </Head>
       <Dimmer active={pageLoading}>
         <Loader size="massive" indeterminate>
@@ -244,7 +212,7 @@ export default function ProfilePage() {
         <DashboardNav
           openProfile={openProfile}
           bal={bal}
-          page="My Profile"
+          page="Get BUSD"
           setSidebar={() => setSidebar((state) => !state)}
           sideBarVisibility={sidebarVisble}
           user={user}
@@ -261,49 +229,18 @@ export default function ProfilePage() {
             maxWidth: "45rem",
           }}
         >
-          <Image centered src="/images/user.png" width={100} height={100} />
           <Form
             style={{ marginTop: "30px" }}
             error={!!message?.content}
             size="large"
           >
             <Form.Input
-              type="email"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Email"
-              size="big"
-              value={user ? user.email : ""}
-            />
-            <Form.Input
-              type="text"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Username"
-              size="big"
-              value={user ? user.username : ""}
-            />
-            <Form.Input
-              type="text"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Account Address"
-              size="big"
-              value={user ? user.acctAddress : ""}
-            />
-            <Form.Input
               type="text"
               style={{ width: "100%", margin: "18px 0" }}
-              label="User Address"
+              label="Amount"
               size="big"
-              placeholder="enter your Address"
-              value={state.user_address}
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  user_address: e.target.value,
-                })
-              }
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             />
 
             <div
@@ -314,8 +251,8 @@ export default function ProfilePage() {
                 alignItems: "center",
               }}
             >
-              <Button onClick={update} loading={loading} primary>
-                Update Profile
+              <Button onClick={getBusd} loading={loading} primary>
+                Submit
               </Button>
             </div>
 

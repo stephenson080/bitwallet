@@ -4,41 +4,31 @@ import { useSelector, useDispatch } from "react-redux";
 
 import SidebarComponent from "../../components/Sidebar";
 import DashboardNav, { Balances } from "../../components/DashboardNav";
-import {
-  logout,
-  autoLogin,
-  setuserAddress,
-} from "../../store/actions/auth_action";
+import { logout, autoLogin } from "../../store/actions/auth_action";
 
 import { Store } from "../_app";
 import User from "../../models/user";
 import { useRouter } from "next/router";
 import { MessageType, Role } from "../../store/types";
 
-import {
-  Form,
-  Message,
-  Button,
-  Icon,
-  Image,
-  Dimmer,
-  Loader,
-} from "semantic-ui-react";
+import { Container, Dimmer, Loader, Grid } from "semantic-ui-react";
 import Acct from "../../ethereum/account";
 import web3 from "../../ethereum/web3-config";
-import { getMyAccountBalance } from "../../ethereum/xend.finance";
 import { addTransactionToDB } from "../../store/actions/user-actions";
 import { TransactionType } from "../admin/transactions";
 import { getCRMToken, getFmtToken, getQmToken } from "../../ethereum/token";
+import { getMyAccountBalance, flexibleInfo } from "../../ethereum/xend.finance";
 import Footer from "../../components/Footer";
+import XendSavings from "../../components/XendSavings";
+import SavingsInfo, { Props } from "../../components/SavingsInfo";
+import Link from "next/link";
 
-interface ProfileState {
-  user_address: string;
-  newPassword: string;
-  confirmPassword: string;
+interface SavingState {
+  savingsInfoFlex: Props | any;
+  savingsInfoFixed: Props | any;
 }
 
-export default function ProfilePage() {
+export default function WithdrwaSavingsPage() {
   const [sidebarVisble, setSidebar] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,13 +36,10 @@ export default function ProfilePage() {
   const [message, setMsg] = useState<MessageType>();
 
   const user = useSelector<Store, User>((state) => state.auth.user!);
+  const [state, setState] = useState<SavingState>();
 
-  const [state, setState] = useState<ProfileState>({
-    user_address: user ? user.user_address : "",
-    newPassword: "",
-    confirmPassword: "",
-  });
   const [bal, setBal] = useState<Balances[]>([]);
+  const [busdBal, setBusdBal] = useState("0");
 
   const msg = useSelector<Store, MessageType>((state) => state.auth.message);
 
@@ -113,6 +100,9 @@ export default function ProfilePage() {
           from: accounts[0],
         });
 
+        const flexibledata = await flexibleInfo(false);
+        const fixedData = await flexibleInfo(true);
+
         const fmtToken = getFmtToken();
         const crmToken = getCRMToken();
         const qmtToken = getQmToken();
@@ -161,56 +151,18 @@ export default function ProfilePage() {
           },
         ];
         setBal(bal);
+        setBusdBal(busdBal);
+        setState({
+          ...state,
+          savingsInfoFlex: flexibledata,
+          savingsInfoFixed: fixedData,
+        });
       }
     } catch (error: any) {
       setMsg({
         type: "DANGER",
         header: "Something went wrong",
         content: error.message,
-      });
-    }
-  }
-
-  async function update() {
-    try {
-      const accounts = await web3.eth.getAccounts();
-      setLoading(true);
-      setSuccess(false);
-      setMsg(undefined);
-      await Acct(user.acctAddress)
-        .methods.setUserAddress(state.user_address)
-        .send({
-          from: accounts[0],
-        })
-        .on("transactionHash", (hash: string) => {
-          dispatch(
-            addTransactionToDB(
-              user.uid,
-              hash,
-              TransactionType.CHANGE_USERADDRESS
-            )
-          );
-        });
-      const updatedUser = new User(
-        user.uid,
-        user.email,
-        user.emailVerified,
-        state.user_address,
-        user.username,
-        user.role,
-        user.acctAddress
-      );
-      dispatch(
-        setuserAddress(updatedUser, (m) => {
-          setLoading(false);
-        })
-      );
-    } catch (error: any) {
-      setLoading(false);
-      setMsg({
-        type: "DANGER",
-        content: `${error.message}`,
-        header: "Something went wrong",
       });
     }
   }
@@ -230,10 +182,11 @@ export default function ProfilePage() {
   function openProfile() {
     router.replace("/user/profile");
   }
+
   return (
     <Fragment>
       <Head>
-        <title>Profile</title>
+        <title>Withdraw Savings</title>
       </Head>
       <Dimmer active={pageLoading}>
         <Loader size="massive" indeterminate>
@@ -244,12 +197,65 @@ export default function ProfilePage() {
         <DashboardNav
           openProfile={openProfile}
           bal={bal}
-          page="My Profile"
+          page="Withdraw Savings"
           setSidebar={() => setSidebar((state) => !state)}
           sideBarVisibility={sidebarVisble}
           user={user}
           logout={handleLogout}
         />
+
+        <Container>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column largeScreen={8} mobile={16}>
+                {/* {state?.savingsInfoFixed.balance && (
+                  <SavingsInfo
+                    balance={state?.savingsInfoFixed.balance}
+                    shareBalance={state?.savingsInfoFixed.shareBalance}
+                    derivativeWithdrawn={
+                      state?.savingsInfoFixed.derivativeWithdrawn
+                    }
+                  />
+                )} */}
+                <div
+                  style={{
+                    backgroundColor: "blue",
+                    padding: "35px",
+                    borderTopRightRadius: "25px",
+                    borderBottomLeftRadius: "25px",
+                    margin: "30px auto 20px auto",
+                    width: "80%",
+                    maxWidth: "40rem",
+                    color: "white",
+                  }}
+                >
+                  <p>
+                    BUSD Balance: <h1>{parseFloat(busdBal).toFixed(2)} BUSD</h1>
+                  </p>
+                  <p>
+                    This amount of token you use for saving{" "}
+                    <Link href={"/user/get-busd"}>
+                      <b style={{ cursor: "pointer" }}>Get BUSD</b>
+                    </Link>
+                  </p>
+                </div>
+              </Grid.Column>
+              <Grid.Column largeScreen={8} mobile={16}>
+                {!state?.savingsInfoFlex && (<SavingsInfo balance= '0.00' shareBalance = '0.00' derivativeWithdrawn='0.00' />)}
+                {state?.savingsInfoFlex.balance && (
+                  <SavingsInfo
+                    balance={state?.savingsInfoFlex.balance}
+                    shareBalance={state?.savingsInfoFlex.shareBalance}
+                    derivativeWithdrawn={
+                      state?.savingsInfoFlex.derivativeWithdrawn
+                    }
+                  />
+                )}
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Container>
+
         <div
           style={{
             backgroundColor: "white",
@@ -258,75 +264,11 @@ export default function ProfilePage() {
             borderBottomLeftRadius: "25px",
             margin: "45px auto",
             width: "80%",
-            maxWidth: "45rem",
+            maxWidth: "50rem",
+            boxShadow: 'rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;'
           }}
         >
-          <Image centered src="/images/user.png" width={100} height={100} />
-          <Form
-            style={{ marginTop: "30px" }}
-            error={!!message?.content}
-            size="large"
-          >
-            <Form.Input
-              type="email"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Email"
-              size="big"
-              value={user ? user.email : ""}
-            />
-            <Form.Input
-              type="text"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Username"
-              size="big"
-              value={user ? user.username : ""}
-            />
-            <Form.Input
-              type="text"
-              disabled
-              style={{ width: "100%", margin: "18px 0" }}
-              label="Account Address"
-              size="big"
-              value={user ? user.acctAddress : ""}
-            />
-            <Form.Input
-              type="text"
-              style={{ width: "100%", margin: "18px 0" }}
-              label="User Address"
-              size="big"
-              placeholder="enter your Address"
-              value={state.user_address}
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  user_address: e.target.value,
-                })
-              }
-            />
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Button onClick={update} loading={loading} primary>
-                Update Profile
-              </Button>
-            </div>
-
-            <Message
-              success={success}
-              style={{ width: "70%" }}
-              error
-              content={message?.content}
-              header={message?.header}
-            />
-          </Form>
+          <XendSavings save = {false} />
         </div>
         <Footer show={false} />
       </SidebarComponent>

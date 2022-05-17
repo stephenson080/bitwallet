@@ -1,44 +1,43 @@
-import {NextPage} from 'next';
-import Head from 'next/head';
-import {useState, useEffect} from 'react';
-import {Grid, Container, Image, Button} from 'semantic-ui-react';
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { Grid, Container, Image, Button } from "semantic-ui-react";
 
-import NavBar from '../components/NavBar';
-import Tokens, {Token, TokenType} from '../components/Token';
-import Services, {Service} from '../components/Services';
-import BuyToken from '../components/BuyToken';
+import NavBar from "../components/NavBar";
+import Tokens, { Token, TokenType } from "../components/Token";
+import Services, { Service } from "../components/Services";
+import BuyToken from "../components/BuyToken";
 
-import getTokens from '../ethereum/tokens';
-import web3 from '../ethereum/web3-config';
-import {useRouter} from 'next/router';
+import getTokens from "../ethereum/tokens";
+import web3 from "../ethereum/web3-config";
 
-import classes from '../styles/Home.module.css';
-import {TransactionType} from './admin/transactions';
-import Notic from '../components/Notic';
-import Footer from '../components/Footer';
+import classes from "../styles/Home.module.css";
+import { TransactionType } from "./admin/transactions";
+import Notic from "../components/Notic";
+import Footer from "../components/Footer";
 
 const services: Service[] = [
   {
-    title: 'Savings',
-    description: 'Your can use your wallet for Saving ether and our tokens',
-    imageUrl: 'saving3.jpg',
+    title: "Savings",
+    description: "Your can use your wallet for Saving ether and our tokens",
+    imageUrl: "saving3.jpg",
   },
   {
-    title: 'Withdraw',
+    title: "Withdraw",
     description:
-      'Your can use your wallet for Withdraw ether to your other Wallets',
-    imageUrl: 'withdraw2.jpg',
+      "Your can use your wallet for Withdraw ether to your other Wallets",
+    imageUrl: "withdraw2.jpg",
   },
   {
-    title: 'Transfer',
+    title: "Transfer",
     description:
-      'Your can use your wallet for Transfer ether and our tokens to other users',
-    imageUrl: 'transfer.jpg',
+      "Your can use your wallet for Transfer ether and our tokens to other users",
+    imageUrl: "transfer.jpg",
   },
   {
-    title: 'Buy Tokens',
-    description: 'Your can use your wallet to our tokens',
-    imageUrl: 'buy.jpg',
+    title: "Buy Tokens",
+    description: "Your can use your wallet to our tokens",
+    imageUrl: "buy.jpg",
   },
 ];
 interface State {
@@ -60,11 +59,11 @@ export async function getStaticProps() {
     },
   };
 }
-const Home: NextPage = (props: Props) => {
+const Home = (props: Props) => {
   const [state, setState] = useState<State>({
-    curContractAddress: '',
-    curTokenName: '',
-    curUserAddress: '',
+    curContractAddress: "",
+    curTokenName: "",
+    curUserAddress: "",
     showBuyTokenModal: false,
   });
   const [noticOpen, setNotic] = useState(false);
@@ -76,11 +75,18 @@ const Home: NextPage = (props: Props) => {
     getAcct();
   }, []);
   async function getAcct() {
-    const accounts = await web3.eth.getAccounts();
-    setState({
-      ...state,
-      curUserAddress: accounts[0],
-    });
+    try {
+      
+
+      const accounts = await web3.eth.getAccounts();
+      console.log(accounts);
+      setState({
+        ...state,
+        curUserAddress: accounts[0],
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
   function getTokenDetails(token: Token, action: TransactionType) {
     if (action === TransactionType.BUY_TOKEN) {
@@ -114,7 +120,7 @@ const Home: NextPage = (props: Props) => {
         }
       />
 
-      <div style={{backgroundColor: 'whitesmoke'}}>
+      <div style={{ backgroundColor: "whitesmoke" }}>
         <NavBar activeItem="jfn" handleClick={() => {}} />
         <Notic
           open={noticOpen}
@@ -130,12 +136,12 @@ const Home: NextPage = (props: Props) => {
                 <Grid.Column largeScreen="8" mobile="16">
                   <h1>Welcome to BITWallet</h1>
                   <h3>
-                    Your <strong>Fast</strong> and <strong>Secure</strong>{' '}
+                    Your <strong>Fast</strong> and <strong>Secure</strong>{" "}
                     Ethereum Wallet
                   </h3>
                   <Button
-                    style={{margin: '20px 0'}}
-                    onClick={() => router.replace('/auth/sign-up')}
+                    style={{ margin: "20px 0" }}
+                    onClick={() => router.replace("/auth/sign-up")}
                     color="blue"
                   >
                     Get Started
@@ -155,14 +161,14 @@ const Home: NextPage = (props: Props) => {
         </div>
       </div>
       <div className={classes.home_header}>
-        <div style={{padding: '20px 0'}}>
+        <div style={{ padding: "20px 0" }}>
           <Container>
             <h1
               style={{
-                textAlign: 'center',
-                margin: '20px 0',
-                fontWeight: 'bolder',
-                fontSize: '3rem',
+                textAlign: "center",
+                margin: "20px 0",
+                fontWeight: "bolder",
+                fontSize: "3rem",
               }}
             >
               Our Tokens
@@ -176,14 +182,14 @@ const Home: NextPage = (props: Props) => {
             </div>
           </Container>
         </div>
-        <div style={{padding: '20px 0'}}>
+        <div style={{ padding: "20px 0" }}>
           <Container>
             <h1
               style={{
-                textAlign: 'center',
-                margin: '20px 0',
-                fontWeight: 'bolder',
-                fontSize: '3rem',
+                textAlign: "center",
+                margin: "20px 0",
+                fontWeight: "bolder",
+                fontSize: "3rem",
               }}
             >
               BITWallet Services
@@ -192,7 +198,7 @@ const Home: NextPage = (props: Props) => {
           </Container>
         </div>
       </div>
-      <Footer show = {false} />
+      <Footer show={false} />
     </div>
   );
 };
