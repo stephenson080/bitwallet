@@ -1,5 +1,5 @@
-import {NextPage} from 'next';
 import Head from 'next/head';
+import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
 import {Grid, Container, Image, Button} from 'semantic-ui-react';
 
@@ -10,7 +10,7 @@ import BuyToken from '../components/BuyToken';
 
 import getTokens from '../ethereum/tokens';
 import web3 from '../ethereum/web3-config';
-import {useRouter} from 'next/router';
+
 
 import classes from '../styles/Home.module.css';
 import {TransactionType} from './admin/transactions';
@@ -60,7 +60,7 @@ export async function getStaticProps() {
     },
   };
 }
-const Home: NextPage = (props: Props) => {
+const Home = (props: Props) => {
   const [state, setState] = useState<State>({
     curContractAddress: '',
     curTokenName: '',
