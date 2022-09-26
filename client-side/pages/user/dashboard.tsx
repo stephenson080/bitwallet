@@ -143,8 +143,6 @@ export default function Dashboard(props: Props) {
       const networkId = await web3.eth.net.getId()
       if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       const accounts = await web3.eth.getAccounts();
-      console.log(accounts)
-      console.log(user)
       if (!user) {
       } else {
         setPageLoading(true);

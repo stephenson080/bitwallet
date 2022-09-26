@@ -1,9 +1,6 @@
 import {Fragment, useState, useEffect} from 'react';
 import {
   Container,
-  Table,
-  Button,
-  Message,
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
@@ -19,7 +16,6 @@ import Tokens, {TokenType} from '../../components/Token';
 import MintToken from '../../components/MintToken';
 
 import web3 from '../../ethereum/web3-config';
-import bankContract from '../../ethereum/bankInstance';
 import getTokens from '../../ethereum/tokens';
 
 
