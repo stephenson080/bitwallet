@@ -1,15 +1,22 @@
-import {Modal, Message, Form, Button, Container, Icon} from 'semantic-ui-react';
-import {useState, useEffect, Fragment} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {
+  Modal,
+  Message,
+  Form,
+  Button,
+  Container,
+  Icon,
+} from "semantic-ui-react";
+import { useState, useEffect, Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import {signup} from '../../store/actions/auth_action';
-import {MessageType} from '../../store/types';
+import { signup } from "../../store/actions/auth_action";
+import { MessageType } from "../../store/types";
 
-import web3 from '../../ethereum/web3-config';
-import bank from '../../ethereum/bankInstance';
-import {Store} from '../_app';
-import {useRouter} from 'next/router';
-import Head from 'next/head';
+import web3 from "../../ethereum/web3-config";
+import bank from "../../ethereum/bankInstance";
+import { Store } from "../_app";
+import { useRouter } from "next/router";
+import Head from "next/head";
 
 type Props = {
   closeModal: () => void;
@@ -27,11 +34,11 @@ export default function Signup(props: Props) {
   const [success, setSuccess] = useState(false);
   const [message, setMsg] = useState<MessageType>();
   const [state, setState] = useState<SignUpState>({
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    user_address: '',
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    user_address: "",
   });
 
   const msg = useSelector<Store, MessageType>((state) => state.auth.message);
@@ -43,9 +50,9 @@ export default function Signup(props: Props) {
     getAccounts();
   }, []);
   useEffect(() => {
-    if (msg.type === 'SUCCESS') {
+    if (msg.type === "SUCCESS") {
       setSuccess(true);
-      return
+      return;
     }
     setMsg({
       content: msg.content,
@@ -61,40 +68,65 @@ export default function Signup(props: Props) {
     });
   }
   useEffect(() => {
-    
     setMsg(undefined);
   }, []);
   const createWallet = async () => {
-    const accounts = await web3.eth.getAccounts();
-    setLoading(true);
-    setMsg(undefined);
-    setSuccess(false);
-    dispatch(
-      signup(state, async (m) => {
-        if (m === 'SUCCESS') {
-          try {
-            await bank.methods
-              .createAccountRequest(state.username)
-              .send({from: accounts[0]});
-            setLoading(false);
+    try {
+      if (!window.ethereum) {
+        setMsg({
+          type: "DANGER",
+          content: "Please install metamask",
+          header: "Error",
+        });
+        setSuccess(false);
+        return;
+      }
+      const networkId = await web3.eth.net.getId();
+      if (networkId !== 4) {
+        setMsg({
+          type: "DANGER",
+          content: "Please connect to Rinkeby testnet",
+          header: "Error",
+        });
+        setSuccess(false);
+        return;
+      }
+      const accounts = await web3.eth.getAccounts();
+      setLoading(true);
+      setMsg(undefined);
+      setSuccess(false);
+      const t = await bank.methods
+        .createAccount(state.username)
+
+      dispatch(
+        signup(state, t.events.NewUser.returnValues.acctAddress, async (m) => {
+          if (m === "SUCCESS") {
             setMsg({
-              type: 'SUCCESS',
-              content: 'You have created an account. Please wait for admin to create your wallet',
-              header: 'Operation Success'
-            })
-          } catch (error : any) {
-            setMsg({
-              content: error.message,
-              header: 'Some went wrong',
-              type: 'DANGER',
+              type: "SUCCESS",
+              content: "You have created an account",
+              header: "Operation Success",
             });
-            setSuccess(false);
             setLoading(false);
+            return
           }
-        }
-        setLoading(false);
-      })
-    );
+          setMsg({
+            type: "DANGER",
+            content: "Something went wrong",
+            header: "Error",
+          });
+          setLoading(false);
+        })
+      );
+    } catch (error: any) {
+      setMsg({
+        type: "DANGER",
+        content: error.message,
+        header: "Error",
+      });
+      setSuccess(false)
+      setLoading(false)
+    }
+    
   };
   return (
     <Fragment>
@@ -102,29 +134,29 @@ export default function Signup(props: Props) {
         <title>BITWallet | Signup</title>
       </Head>
       <Modal dimmer open>
-        <Modal.Header style={{backgroundColor: 'blue', color: 'white'}}>
-          {' '}
+        <Modal.Header style={{ backgroundColor: "blue", color: "white" }}>
+          {" "}
           <Icon
             loading={loading}
-            name={loading ? 'asterisk' : 'add circle'}
-          />{' '}
+            name={loading ? "asterisk" : "add circle"}
+          />{" "}
           {loading
-            ? 'Creating Your Account! Please Wait...'
-            : 'Create Your Account'}
+            ? "Creating Your Account! Please Wait..."
+            : "Create Your Account"}
         </Modal.Header>
         <Modal.Content>
           <Container>
-            <h5 style={{marginLeft: '28px'}}>
+            <h5 style={{ marginLeft: "28px" }}>
               Fill in the Form to create a new account
             </h5>
             <Form
-              style={{marginTop: '55px', marginLeft: '28px'}}
+              style={{ marginTop: "55px", marginLeft: "28px" }}
               loading={loading}
               error={!!message?.content}
             >
               <Form.Input
                 type="email"
-                style={{width: '100%'}}
+                style={{ width: "100%" }}
                 label="Email"
                 size="big"
                 placeholder="enter your email"
@@ -138,7 +170,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="text"
-                style={{width: '100%'}}
+                style={{ width: "100%" }}
                 label="Username"
                 size="big"
                 placeholder="enter your username"
@@ -152,7 +184,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="password"
-                style={{width: '100%'}}
+                style={{ width: "100%" }}
                 label="Password"
                 size="big"
                 placeholder="enter your password"
@@ -166,7 +198,7 @@ export default function Signup(props: Props) {
               />
               <Form.Input
                 type="password"
-                style={{width: '100%'}}
+                style={{ width: "100%" }}
                 label="Confirm Password"
                 size="big"
                 placeholder="confirm your password"
@@ -180,7 +212,7 @@ export default function Signup(props: Props) {
               />
               <Message
                 success={success}
-                style={{width: '70%'}}
+                style={{ width: "70%" }}
                 error
                 content={message?.content}
                 header={message?.header}
@@ -192,7 +224,7 @@ export default function Signup(props: Props) {
           <Button
             disabled={loading ? true : false}
             negative
-            onClick={() => router.replace('/auth/login')}
+            onClick={() => router.replace("/auth/login")}
           >
             Back to Login
           </Button>

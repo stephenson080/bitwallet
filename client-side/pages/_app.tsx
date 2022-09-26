@@ -9,6 +9,12 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import authreducer, {AuthState} from '../store/reducers/auth';
 import userReducer, { UserState } from '../store/reducers/userReducer';
 
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 export interface Store {
   auth: AuthState,
   user: UserState

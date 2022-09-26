@@ -7,7 +7,6 @@ contract Bank {
     address private admin;
     address private bankAddress;
     mapping(uint => Customer) public customers;
-    mapping (address => uint) public pendingCustomers;
     uint private customersCount = 0;
     uint private currentCustomerIndex = 1;
 
@@ -19,31 +18,23 @@ contract Bank {
         address acctAddress;
     }
 
+    event NewUser(address acctAddress);
+
     constructor(){
         admin = msg.sender;
         bankAddress = address(this);
     }
 
-    function createAccountRequest(string memory usname) public  {
-        require(!customerExist(msg.sender), "Sorry this address already have an account with us");
-        Customer storage newCustomer = customers[currentCustomerIndex];
-        newCustomer.username = usname;
-        newCustomer.userAddress = msg.sender;
-        newCustomer.created = false;
-        pendingCustomers[msg.sender] = currentCustomerIndex;
-        currentCustomerIndex++;
-        customersCount++;
-    }
 
-    function createAccount(address user_address) public checkAdmin  {
-        uint index = pendingCustomers[user_address];
-        require(index > 0, 'You have not Registered or you already have an account');
-        Customer storage customer = customers[index];
-        Account newAccount = new Account(customer.userAddress, customer.username);
+    function createAccount(string calldata username) public  {
+        require(!customerExist(msg.sender), 'Already have an account');
+        Customer storage customer = customers[currentCustomerIndex];
+        Account newAccount = new Account(msg.sender, username);
         customer.created = true;
-        
+
         customer.acctAddress = address(newAccount);
-        pendingCustomers[user_address] = 0;
+
+        emit NewUser(address(newAccount));
         
     }
 

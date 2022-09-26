@@ -71,6 +71,9 @@ export default function WithdrawPage() {
 
   async function withdraw() {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       setLoading(true);
       setSuccess(false);
       setMsg(undefined);
@@ -103,6 +106,9 @@ export default function WithdrawPage() {
 
   async function getAcctDetails(user: User) {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       const accounts = await web3.eth.getAccounts();
       if (!user) {
       } else {

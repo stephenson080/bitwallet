@@ -28,17 +28,10 @@ describe("Bank", function(){
     describe("checking customers", function(){
         it("checking customers after creating", async function(){
             console.log(`creating new account request...`)
-            await bank.createAccountRequest("Steve", {from: accounts[1]})
-            await bank.createAccountRequest("John", {from: accounts[2]})
             
-            console.log(`Admin creating new account...`)
-            const a = await bank.createAccount(accounts[1])
-            const b = await  bank.createAccount(accounts[2])
             
-            console.log(`Getting Number of Customers...`)
-
-            const bankCustomers = await bank.getCustomers()
-            console.log(`Number of Customers: ${bankCustomers}`)
+            const t = await bank.createAccount('test')
+            console.log(t.logs[0].args.acctAddress)
 
             // expect(bankCustomers).to.equal(2)
         

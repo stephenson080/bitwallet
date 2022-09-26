@@ -71,6 +71,25 @@ export default function Login() {
   }
   async function setDependencies() {
     if (user) {
+      if (!window.ethereum){
+        setMsg({
+          type: 'DANGER',
+          content: 'Please install metamask',
+          header: 'Error',
+        });
+        setSuccess(false);
+        return
+      }
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4){
+        setMsg({
+          type: 'DANGER',
+          content: 'Please connect to Rinkeby testnet',
+          header: 'Error',
+        });
+        setSuccess(false);
+        return
+      }
       const accounts = await web3.eth.getAccounts();
       if (user.user_address !== accounts[0]) {
         setMsg({
@@ -79,15 +98,7 @@ export default function Login() {
           header: 'Warning',
         });
         setSuccess(false);
-      } else if (user.acctAddress === undefined && user.role === Role.User) {
-        setMsg({
-          type: 'DANGER',
-          header: 'WARNING',
-          content:
-            "Sorry, you can't Login cause your account has not been verified yet",
-        });
-        setSuccess(false);
-      } else {
+      }  else {
         setSuccess(true)
         setMsg({
           type: msg.type,
@@ -113,6 +124,13 @@ export default function Login() {
     setMsg(undefined);
     dispatch(
       Signin(state, (m, userAdd) => {
+        if (m === 'DANGER'){
+          setMsg({
+            type: m,
+            content: 'wrong email or password',
+            header: 'Error'
+          })
+        }
         setLoading(false);
       })
     );

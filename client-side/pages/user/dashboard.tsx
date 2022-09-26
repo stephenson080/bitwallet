@@ -139,7 +139,12 @@ export default function Dashboard(props: Props) {
 
   async function getAcctDetails(user: User) {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       const accounts = await web3.eth.getAccounts();
+      console.log(accounts)
+      console.log(user)
       if (!user) {
       } else {
         setPageLoading(true);
@@ -147,6 +152,8 @@ export default function Dashboard(props: Props) {
         const summary = await acctInstance.methods.getAccountDetails().call({
           from: accounts[0],
         });
+      console.log('okau1')
+
         const fmtToken = getFmtToken();
         const crmToken = getCRMToken();
         const qmtToken = getQmToken();
@@ -159,6 +166,9 @@ export default function Dashboard(props: Props) {
         const qmbalance = await qmtToken.methods
           .getBalance(user.user_address)
           .call();
+        
+      console.log('okay2')
+
 
         const tokenBalences : Tokendetail[] = [
           {
@@ -216,6 +226,8 @@ export default function Dashboard(props: Props) {
             text: `QMint Token: ${web3.utils.fromWei(qmbalance)}`,
           },
         ];
+
+        console.log(bal)
 
         setPageLoading(false);
         setBal(bal);

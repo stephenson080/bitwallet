@@ -2,6 +2,7 @@ import { Modal, Icon, Button, Container, Form, Message } from "semantic-ui-react
 import { useState } from "react";
 
 import getToken from "../ethereum/token";
+import web3 from '../ethereum/web3-config';
 import {MessageType} from '../store/types';
 
 type Props = {
@@ -31,10 +32,13 @@ export default function MintToken(props : Props) {
 
   async function mintToken() {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       setSuccess(false);
       setLoading(true);
       setMsg(undefined);
-      const tokenContract = await getToken(props.contractAddress);
+      const tokenContract =  getToken(props.contractAddress);
       await tokenContract.methods.mintToken(state.amount.toString()).send({
 
         from: props.userAddress,

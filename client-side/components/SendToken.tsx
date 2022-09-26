@@ -32,10 +32,13 @@ export default function SendToken(props: Props) {
 
   async function sendToken() {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       setSuccess(false);
       setLoading(true);
       setMsg(undefined);
-        const tokenContract = await getToken(props.contractAddress);
+        const tokenContract = getToken(props.contractAddress);
         await tokenContract.methods.sendUserSomeToken(state.recipiant, web3.utils.toWei(state.amount.toString(), 'ether')).send({
           from: props.userAddress
         }).on('transactionHash', (hash : string) => {

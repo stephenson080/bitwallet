@@ -61,7 +61,7 @@ async function checkUser(username: string) {
   }
 }
 
-export function signup(data: SignUpState, cb: (m: string) => Promise<void>) {
+export function signup(data: SignUpState, acctAddress: string, cb: (m: string) => Promise<void>) {
   return async (dispatch: any) => {
     try {
       dispatch(clearMsg());
@@ -86,7 +86,7 @@ export function signup(data: SignUpState, cb: (m: string) => Promise<void>) {
         data.user_address,
         data.username,
         Role.User,
-        undefined
+        acctAddress
       );
       await user.addUserToDB();
       // await sendEmailVerification(auth.currentUser!);

@@ -32,6 +32,9 @@ export default function BuyToken(props: Props) {
 
   async function buyToken() {
     try {
+      if (!window.ethereum) throw new Error('Please install metamask')
+      const networkId = await web3.eth.net.getId()
+      if (networkId !== 4) throw new Error('Please connect to rinkeby testnet')
       setSuccess(false);
       setLoading(true);
       setMsg(undefined);
